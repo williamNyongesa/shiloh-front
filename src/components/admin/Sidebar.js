@@ -1,6 +1,6 @@
 const Sidebar = () => {
   return (
-    <aside className="w-64 min-h-screen bg-gray-200 mt-1 flex flex-col items-center">
+    <aside className="w-64 min-h-screen bg-primary mt-1 flex flex-col items-center">
       <img src="/logo192.png" alt="Logo" className="w-32 mb-4 p-2" /> 
       <nav className="w-full bg-gray-200">
         <ul className="space-y-2">
