@@ -1,6 +1,6 @@
 {
-  "short_name": "Shiloh SMS",
-  "name": "SHILOH SCHOOL MANAGEMENT SYSTEM",
+  "short_name": "Shiloh SMS App",
+  "name": "SHILOH COLLEGE SMS",
   "icons": [
     {
       "src": "favicon.ico",
@@ -13,7 +13,7 @@
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "logo192.png",
       "type": "image/png",
       "sizes": "512x512"
     }
