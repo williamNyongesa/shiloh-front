@@ -1,15 +1,16 @@
-// import logo from './logo.svg';
-// import './App.css';
-import Sidebar from "./Sidebar";
+
+import {Route, Routes } from 'react-router-dom';
+import Admin from './admin/Admin'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1 className="text-center text-2xl p-4 text-blue-500 font-bold">Welcome to Shiloh School Management System</h1>
-      </header>
-      <Sidebar />
-    </div>
+        <div>
+          <Routes>
+            <Route path="/" element={<h1>Welcome to Shiloh SMS APP</h1>} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </div>
+
   );
 }
 
