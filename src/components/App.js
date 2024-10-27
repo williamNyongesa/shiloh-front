@@ -1,6 +1,7 @@
 import '../App.css'
 import { Route, Routes } from 'react-router-dom';
 import Navbar from './Navbar'
+import Home from './Home'
 import Signup from './Signup'
 import Login from './Login'
 import Admin from './admin/Admin'
@@ -10,7 +11,7 @@ function App() {
     <div>
       <Navbar />
           <Routes>
-            <Route path="/" element={<h1>Welcome to Shiloh SMS APP</h1>} />
+            <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
