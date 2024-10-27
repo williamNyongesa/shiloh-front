@@ -19,7 +19,7 @@ const Signup = () => {
       email: Yup.string().email('Invalid email address').required('Required'),
       password: Yup.string()
         .required('Required')
-        .min(6, 'Password must be at least 6 characters'),
+        .min(8, 'Password must be at least 6 characters'),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref('password'), null], 'Passwords must match')
         .required('Required'),
@@ -195,7 +195,7 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full px-4 py-2 text-white bg-yellow-700 rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Sign Up
           </button>
