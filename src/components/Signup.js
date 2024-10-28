@@ -27,7 +27,7 @@ const Signup = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch('url/users', {
+        const response = await fetch('http://127.0.0.1:5000/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -183,8 +183,8 @@ const Signup = () => {
             >
               <option value="">Select a role</option>
               <option value="admin">Admin</option>
-              <option value="technician">Student</option>
-              <option value="receptionist">Teacher</option>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
             </select>
             {formik.touched.role && formik.errors.role && (
               <div className="mt-1 text-sm text-red-500">

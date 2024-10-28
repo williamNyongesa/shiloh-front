@@ -5,21 +5,24 @@ import App from './components/App'
 import reportWebVitals from './reportWebVitals';
 import { SnackbarProvider } from 'notistack';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { AuthProvider } from './components/context/AuthContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <SnackbarProvider 
-      preventDuplicate
-      maxSnack={3} 
-      autoHideDuration={5000}
-      anchorOrigin={
-        {vertical: 'top', horizontal: 'right'}
-    }>
-      <Router>
-        <App />
-      </Router>
-    </SnackbarProvider>
+    <AuthProvider>
+      <SnackbarProvider 
+        preventDuplicate
+        maxSnack={3} 
+        autoHideDuration={5000}
+        anchorOrigin={
+          {vertical: 'top', horizontal: 'right'}
+      }>
+        <Router>
+          <App />
+        </Router>
+        </SnackbarProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
