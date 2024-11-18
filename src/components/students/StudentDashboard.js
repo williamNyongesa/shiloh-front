@@ -1,9 +1,9 @@
-import { StudentRegistration } from "./StudentRegistration";
+
 
 const StudentDashboard = () => {
     return ( 
         <div>
-            <StudentRegistration />
+           <h1>Welcome to the Student DashBoard</h1> 
         </div>
      );
 }

@@ -35,7 +35,7 @@ export const StudentRegistration = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setAuth({ user: data, role: "student" });
-                    navigate("/");
+                    navigate("/student");
                 } else {
                     const errorData = await response.json();
                     console.error("Registration failed:", errorData.message || "Unknown error");
