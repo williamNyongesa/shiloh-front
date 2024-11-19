@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
@@ -9,6 +9,7 @@ export const StudentRegistration = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
+    const [loading, setLoading] = useState(false)
 
     const formik = useFormik({
         initialValues: {
@@ -28,7 +29,7 @@ export const StudentRegistration = () => {
                             .required('Country is required.')
         }),
         onSubmit: async (values) => {
-            console.log("Submitting:", values); // Log values for debugging
+            setLoading(true);
             try {
                 const response = await fetch("http://127.0.0.1:5000/students", {
                     method: "POST",
@@ -42,7 +43,7 @@ export const StudentRegistration = () => {
                     const data = await response.json();
                     setAuth({ user: data, role: "student" });
                     enqueueSnackbar('Registration successful!', { variant: 'success' });
-                    navigate("/student");
+                    navigate("/enrollment");
                 } else {
                     const errorData = await response.json();
                     enqueueSnackbar(errorData.message || 'Registration failed', { variant: 'error' });
@@ -51,6 +52,9 @@ export const StudentRegistration = () => {
             } catch (error) {
                 console.error("Registration failed:", error.message);
                 enqueueSnackbar('An error occurred. Please try again later.', { variant: 'error' });
+            }
+            finally {
+                setLoading(false);
             }
         },
     });
@@ -180,12 +184,14 @@ export const StudentRegistration = () => {
                         </div>
                     )}
                 </div>
-
                 <button 
                     type="submit" 
-                    className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:ring focus:ring-blue-300 focus:outline-none"
+                    className={`w-full px-4 py-2 text-white bg-blue-500 rounded-md ${
+                        loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
+                    }`}
+                    disabled={loading}
                 >
-                    Register
+                    {loading ? 'Registering...' : 'Register'}
                 </button>
             </form>
         </div>
