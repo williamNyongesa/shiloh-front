@@ -9,6 +9,7 @@ import StudentDashboard from './students/StudentDashboard';
 import { StudentRegistration } from './students/StudentRegistration';
 import Enrollment from './enrollment/Enrollment';
 
+
 function App() {
   return (
     <div>

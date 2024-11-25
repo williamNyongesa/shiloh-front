@@ -37,7 +37,7 @@ const Navbar = () => {
           </li>
           <li>
             <Link
-              to="/signup"
+              to="/student/registration"
               className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
               onClick={() => setIsOpen(false)}
             >
