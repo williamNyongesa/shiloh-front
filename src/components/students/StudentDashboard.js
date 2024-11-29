@@ -1,120 +1,145 @@
 import React from "react";
+import { Box, Drawer, Paper, Typography, Button, Divider } from "@mui/material";
 
 const StudentDashboard = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white">
-        <div className="p-4">
-          <div className="flex items-center gap-4">
+    <Box sx={{ display: 'flex', height: '100vh', backgroundColor: '#f5f5f5' }}>
+      <Drawer
+        sx={{
+          width: 250,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 250,
+            backgroundColor: '#424242',
+            color: 'white',
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <Box sx={{ padding: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <img
               src="https://via.placeholder.com/50"
               alt="Profile"
-              className="w-12 h-12 rounded-full"
+              style={{ width: 50, height: 50, borderRadius: '50%' }}
             />
-            <div>
-              <p>Welcome</p>
-              <p className="font-semibold">Ramkumar K</p>
-              <p className="text-sm text-gray-400">Student</p>
-            </div>
-          </div>
-        </div>
-        <nav className="mt-6">
-          <ul>
-            <li className="p-4 hover:bg-gray-700 cursor-pointer">Dashboard</li>
-            <li className="p-4 hover:bg-gray-700 cursor-pointer">Logout</li>
-          </ul>
-        </nav>
-      </aside>
+            <Box>
+              <Typography variant="body2">Welcome</Typography>
+              <Typography variant="h6">Ramkumar K</Typography>
+              <Typography variant="body2" sx={{ color: 'gray' }}>Student</Typography>
+            </Box>
+          </Box>
+        </Box>
+        <Divider sx={{ my: 2 }} />
+        <Box>
+          <Button fullWidth sx={{ color: 'white', textAlign: 'left', padding: 1 }} >
+            Dashboard
+          </Button>
+          <Button fullWidth sx={{ color: 'white', textAlign: 'left', padding: 1 }} >
+            Logout
+          </Button>
+        </Box>
+      </Drawer>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="bg-white shadow p-4">
-          <h1 className="text-center text-xl font-semibold">WELCOME TO SHILOH</h1>
-        </header>
+      <Box sx={{ flexGrow: 1, padding: 4 }}>
+        <Paper sx={{ padding: 3, boxShadow: 3, marginBottom: 4 }}>
+          <Typography variant="h4" align="center">WELCOME TO SHILOH</Typography>
+        </Paper>
 
-        {/* Dashboard Content */}
-        <main className="p-6 space-y-6">
-          {/* Overview Cards */}
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { label: "Courses To Do", count: 29 },
-              { label: "Overdue Courses", count: 6 },
-              { label: "Completed Courses", count: 1 },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 rounded shadow text-center"
-              >
-                <p className="text-2xl font-bold">{item.count}</p>
-                <p className="text-gray-600">{item.label}</p>
-              </div>
-            ))}
-          </div>
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          <Box sx={{ width: { xs: '100%', sm: '33%' }, padding: 3 }}>
+            <Paper sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: 3 }}>
+              <Typography variant="h3" sx={{ fontWeight: 'bold' }}>29</Typography>
+              <Typography variant="body2" sx={{ color: 'gray' }}>Courses To Do</Typography>
+            </Paper>
+          </Box>
+          <Box sx={{ width: { xs: '100%', sm: '33%' }, padding: 3 }}>
+            <Paper sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: 3 }}>
+              <Typography variant="h3" sx={{ fontWeight: 'bold' }}>6</Typography>
+              <Typography variant="body2" sx={{ color: 'gray' }}>Overdue Courses</Typography>
+            </Paper>
+          </Box>
+          <Box sx={{ width: { xs: '100%', sm: '33%' }, padding: 3 }}>
+            <Paper sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: 3 }}>
+              <Typography variant="h3" sx={{ fontWeight: 'bold' }}>1</Typography>
+              <Typography variant="body2" sx={{ color: 'gray' }}>Completed Courses</Typography>
+            </Paper>
+          </Box>
+        </Box>
 
-          {/* Rewards and Certificates */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded shadow">
-              <h2 className="font-bold mb-2">Reward</h2>
-              <div className="flex gap-2">
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          <Box sx={{ width: { xs: '100%', sm: '50%' }, padding: 3 }}>
+            <Paper sx={{ padding: 3, boxShadow: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Reward</Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
                 {[...Array(5)].map((_, i) => (
-                  <div
+                  <Box
                     key={i}
-                    className="w-8 h-8 rounded-full bg-gray-300"
-                  ></div>
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: '50%',
+                      backgroundColor: '#b0bec5',
+                    }}
+                  ></Box>
                 ))}
-              </div>
-              <button className="mt-4 text-blue-500">View All</button>
-            </div>
-            <div className="bg-white p-4 rounded shadow">
-              <h2 className="font-bold mb-2">Certificates</h2>
-              <div className="flex gap-2">
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-gray-300"
-                  ></div>
-                ))}
-              </div>
-              <button className="mt-4 text-blue-500">View All</button>
-            </div>
-          </div>
+              </Box>
+              <Button sx={{ mt: 2 }} color="primary">View All</Button>
+            </Paper>
+          </Box>
 
-          {/* Courses Section */}
-          <div className="bg-white p-4 rounded shadow">
-            <div className="flex justify-between border-b pb-2 mb-4">
-              <h2 className="font-bold">Courses</h2>
-              <button className="text-blue-500">View All</button>
-            </div>
-            {[
-              { title: "Basics of HTML", progress: 13 },
+          <Box sx={{ width: { xs: '100%', sm: '50%' }, padding: 3 }}>
+            <Paper sx={{ padding: 3, boxShadow: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Certificates</Typography>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                {[...Array(5)].map((_, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: '50%',
+                      backgroundColor: '#b0bec5',
+                    }}
+                  ></Box>
+                ))}
+              </Box>
+              <Button sx={{ mt: 2 }} color="primary">View All</Button>
+            </Paper>
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 3 }}>
+          <Paper sx={{ padding: 3, boxShadow: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', borderBottom: 1, pb: 2, mb: 4 }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Courses</Typography>
+              <Button sx={{ color: 'primary.main' }}>View All</Button>
+            </Box>
+
+            {[{ title: "Basics of HTML", progress: 13 },
               { title: "Angular in Steps", progress: 73 },
-              { title: "Bootstrap Foundation", progress: 60 },
-            ].map((course, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between mb-4"
-              >
-                <div>
-                  <p className="font-semibold">{course.title}</p>
-                  <p className="text-sm text-gray-500">
-                    Lorem ipsum is simply dummy text.
-                  </p>
-                  <div className="w-full bg-gray-200 h-2 rounded mt-2">
-                    <div
-                      className="bg-green-500 h-2 rounded"
-                      style={{ width: `${course.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <button className="text-blue-500">Continue</button>
-              </div>
-            ))}
-          </div>
-        </main>
-      </div>
-    </div>
+              { title: "Bootstrap Foundation", progress: 60 }]
+              .map((course, index) => (
+                <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                  <Box>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{course.title}</Typography>
+                    <Typography variant="body2" sx={{ color: 'gray' }}>Lorem ipsum is simply dummy text.</Typography>
+                    <Box sx={{ width: '100%', height: 6, backgroundColor: '#e0e0e0', mt: 1 }}>
+                      <Box sx={{
+                        width: `${course.progress}%`,
+                        height: '100%',
+                        backgroundColor: '#388e3c',
+                      }} />
+                    </Box>
+                  </Box>
+                  <Button sx={{ color: 'primary.main' }}>Continue</Button>
+                </Box>
+              ))}
+          </Paper>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,61 +1,98 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Button, Box, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
   };
 
+  const handleMenuClose = () => {
+    setDrawerOpen(false);
+  };
+
+  const menuItems = [
+    { label: 'Home', path: '/' },
+    { label: 'Sign Up', path: '/signup' },
+    { label: 'Login', path: '/login' },
+    { label: 'Admin', path: '/admin' },
+    { label: 'Student Dashboard', path: '/student' },
+    { label: 'Student Registration', path: '/student/registration' },
+    { label: 'Enrollment', path: '/enrollment' }
+  ];
+
   return (
-    <nav className="bg-blue-600 p-4">
-      <div className="flex justify-between items-center w-full">
-        <div className="flex items-center space-x-2">
-          <img src="/logo192.png" alt="Shiloh Logo" className="h-10 w-10" />
-          <span className="text-white font-bold text-xl">Shiloh College</span>
-        </div>
-        <button
-          onClick={toggleMenu}
-          className="text-white md:hidden"
+    <AppBar position="sticky" sx={{ backgroundColor: '#1976d2' }}>
+      <Toolbar sx={{ padding: '0 20px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, color: '#fff', }}>
+          <Typography variant="h6" sx={{ flexGrow: 1,  fontWeight: 600 }} >
+            Shiloh College
+          </Typography>
+        </Box>
+
+        <IconButton
+          sx={{ display: { xs: 'block', md: 'none' }, color: '#fff' }}
+          edge="end"
+          onClick={handleDrawerToggle}
         >
-          <span className="material-icons">menu</span>
-        </button>
-        <ul
-          className={`${
-            isOpen ? 'block' : 'hidden'
-          } md:flex md:space-x-4 absolute md:static left-0 right-0 top-16 md:top-0 bg-blue-600 md:bg-transparent md:flex-row flex-col md:space-y-0 space-y-2 p-4 md:p-0`}
+          <MenuIcon />
+        </IconButton>
+
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 3 }}>
+          {menuItems.map(item => (
+            <Button
+              key={item.label}
+              component={Link}
+              to={item.path}
+              sx={{
+                color: '#fff',
+                '&:hover': {
+                  backgroundColor: '#115293',
+                  borderRadius: '4px',
+                },
+                fontWeight: '500',
+              }}
+            >
+              {item.label}
+            </Button>
+          ))}
+        </Box>
+
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={handleMenuClose}
         >
-          <li>
-            <Link
-              to="/"
-              className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/student/registration"
-              className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Signup
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/login"
-              className="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              Login
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+          <Box sx={{ width: 250, padding: '20px' }}>
+            <List>
+              {menuItems.map(item => (
+                <ListItem button key={item.label} onClick={handleMenuClose}>
+                  <ListItemText>
+                    <Button
+                      component={Link}
+                      to={item.path}
+                      sx={{
+                        color: '#1976d2',
+                        fontWeight: '500',
+                        width:'100%',
+                        '&:hover': {
+                          color: '#115293',
+                        },
+                      }}
+                    >
+                      {item.label}
+                    </Button>
+                  </ListItemText>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      </Toolbar>
+    </AppBar>
   );
 };
 
