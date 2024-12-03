@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
 import { Navigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
@@ -13,19 +12,20 @@ export const AuthProvider = ({ children }) => {
         const savedUser = localStorage.getItem('user');
 
         if (savedToken && savedUser) {
-            const decodedUser = JSON.parse(savedUser);
+            const decodedUser = JSON.parse(savedUser); 
             setToken(savedToken);
             setUser(decodedUser);
         }
     }, []);
 
-    const login = (access_token, username, email, role) => {
+    const login = (access_token, userData) => {
+        const { username, role } = userData; 
 
         localStorage.setItem('access_token', access_token);
-        localStorage.setItem('user', JSON.stringify({ username, email, role }));  
+        localStorage.setItem('user', JSON.stringify({ username, role }));
 
         setToken(access_token);
-        setUser({ username, email, role });
+        setUser({ username, role });  
     };
 
     const logout = () => {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
 
         setToken(null);
-        setUser(null); 
+        setUser(null);
     };
 
     const isAuthenticated = () => !!token;
@@ -53,9 +53,9 @@ export const useAuth = () => {
 
 export const ProtectedRoute = ({ children, requiredRole }) => {
     const { user, isAuthenticated } = useAuth();
-
+    
     if (!isAuthenticated() || (requiredRole && user?.role !== requiredRole)) {
         return <Navigate to="/login" />;
     }
     return children;
-};
+}

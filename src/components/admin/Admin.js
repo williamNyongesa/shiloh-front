@@ -10,15 +10,15 @@ const Admin = () => {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
 
-  const userRole = localStorage.getItem('role'); 
+  const user = localStorage.getItem('user')
   useEffect(() => {
-    if (userRole !== 'admin') {
-      navigate('/home');  
-    }
-  }, [userRole, navigate]);
-
+  //   if (user.role !== 'admin') {
+  //     navigate('/home');  
+  //   }
+  // }, [user, navigate]);
+  },[]);
   return (
-    userRole === 'admin' ? (  
+    // user.role === 'admin' ? (  
       <Box sx={{ display: "flex", height: "100%" }}>
         <Drawer
           sx={{
@@ -51,7 +51,7 @@ const Admin = () => {
               />
               <Box>
                 <Typography variant="body2">Welcome</Typography>
-                <Typography variant="h6">Ramkumar K</Typography>
+                <Typography variant="h6">{user.username} K</Typography>
                 <Typography variant="body2" sx={{ color: "gray" }}>Admin</Typography>  {/* Role Display */}
               </Box>
             </Box>
@@ -75,7 +75,7 @@ const Admin = () => {
           <TransactionList />
         </Box>
       </Box>
-    ) : null 
+    // ) : null 
   );
 };
 

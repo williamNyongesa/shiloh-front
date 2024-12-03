@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext.js';
-import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -32,10 +31,12 @@ const Login = () => {
         if (response.status === 200) {
           const { access_token, username, email, role } = response.data;
 
-          // Ensure the data exists in the response
           if (access_token && username && email && role) {
-            login(access_token, { username, email, role });
-            navigate('/');
+            login(access_token, { username, role });
+            if(role === 'student')
+              navigate('/enrollment');
+            if(role=== 'admin')
+              navigate('/admin')
           } else {
 
             setErrorMessage('Invalid login data received.');

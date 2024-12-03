@@ -6,6 +6,7 @@ import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIco
 const StudentDashboard = () => {
   const [open, setOpen] = useState(false);
   const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const user = JSON.parse(localStorage.getItem('user'))
 
   const stats = [
     { label: "Courses To Do", count: 29, icon: <DashboardIcon /> },
@@ -118,7 +119,7 @@ const StudentDashboard = () => {
               />
               <Box>
                 <Typography variant="body2">Welcome</Typography>
-                <Typography variant="h6">Ramkumar K</Typography>
+                <Typography variant="h6">{user.username}</Typography>
                 <Typography variant="body2" sx={{ color: "gray" }}>Student</Typography>
               </Box>
             </Box>

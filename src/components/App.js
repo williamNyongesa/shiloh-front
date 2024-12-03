@@ -8,10 +8,9 @@ import StudentDashboard from './students/StudentDashboard';
 import { StudentRegistration } from './students/StudentRegistration';
 import Enrollment from './enrollment/Enrollment';
 import { ThemeProvider } from '@emotion/react';
-import { createTheme, useMediaQuery } from '@mui/material';
+import { createTheme } from '@mui/material';
 import LandingPage from './Landing';
-import { AuthProvider } from './context/AuthContext';
-import PrivateRoute from '../PrivateRoute';
+import { ProtectedRoute } from './context/AuthContext';
 
 function App() {
   const theme = createTheme({
@@ -34,35 +33,49 @@ function App() {
     },
   });
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
   return (
     <div>
       <ThemeProvider theme={theme}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
 
-            <Route
-              path="/admin"
-              element={<PrivateRoute element={<Admin />} role="admin" redirectTo="/" />}
-            />
-            <Route
-              path="/student"
-              element={<PrivateRoute element={<StudentDashboard />} role="student" redirectTo="/" />}
-            />
-            <Route
-              path="/student/registration"
-              element={<PrivateRoute element={<StudentRegistration />} role="admin" redirectTo="/" />}
-            />
-            <Route
-              path="/enrollment"
-              element={<PrivateRoute element={<Enrollment />} role="student" redirectTo="/" />}
-            />
-          </Routes>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <StudentDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/student/registration"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <StudentRegistration />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/enrollment"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <Enrollment />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
       </ThemeProvider>
     </div>
   );
