@@ -1,27 +1,71 @@
+import React from "react";
+import { AppBar, Toolbar, Typography, IconButton, TextField, Badge, Box } from "@mui/material";
+import { Search, Notifications, Email } from "@mui/icons-material";
+
 const Header = () => {
   return (
-    <header className="flex items-center justify-around bg-secondary p-4  mb-0">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <div className="flex items-center justify-around space-x-4 ml-4">
-      <div className="relative flex items-center">
-        <span className="material-icons absolute left-3 text-gray-400">search</span>
-        <input
-          type="text"
-          placeholder="Search Here..."
-          className="pl-10 p-2 border border-gray-300 rounded w-full"
-        />
-      </div>
+    <AppBar position="sticky" sx={{ backgroundColor: 'secondary.main', padding: 2 }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Dashboard</Typography>
 
-        <button className="relative">
-          <span className="material-icons">notifications</span>
-          <span className="absolute bottom-4 left-3 inline-flex items-center justify-center p-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">9</span>
-        </button>
-        <button className="relative">
-          <span className="material-icons">email</span>
-          <span className="absolute bottom-4 left-4 inline-flex items-center justify-center p-1 text-xs font-bold leading-none text-white bg-yellow-500 rounded-full">3</span>
-        </button>
-      </div>
-    </header>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+          <Box sx={{ position: 'relative', width: '250px' }}>
+            <TextField
+              variant="outlined"
+              placeholder="Search Here..."
+              fullWidth
+              sx={{
+                paddingLeft: 3,
+                backgroundColor: 'white',
+                borderRadius: 1,
+                '& .MuiInputBase-root': { padding: 1 },
+              }}
+              slotProps={{
+                startAdornment: (
+                  <IconButton sx={{ position: 'absolute', left: 8 }}>
+                    <Search sx={{ color: 'gray' }} />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Box>
+
+          <IconButton sx={{ position: 'relative' }}>
+            <Notifications sx={{ color: 'white' }} />
+            <Badge
+              badgeContent={9}
+              color="error"
+              sx={{
+                position: 'absolute',
+                bottom: 4,
+                left: 3,
+                fontSize: '0.75rem',
+                fontWeight: 'bold',
+                borderRadius: '50%',
+                padding: '0 5px',
+              }}
+            />
+          </IconButton>
+
+          <IconButton sx={{ position: 'relative' }}>
+            <Email sx={{ color: 'white' }} />
+            <Badge
+              badgeContent={3}
+              color="warning"
+              sx={{
+                position: 'absolute',
+                bottom: 4,
+                left: 3,
+                fontSize: '0.75rem',
+                fontWeight: 'bold',
+                borderRadius: '50%',
+                padding: '0 5px',
+              }}
+            />
+          </IconButton>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

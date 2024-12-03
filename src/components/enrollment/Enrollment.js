@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./enrollment.css";
+import { Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
+import "./enrollment.css"; // Ensure that you also apply any custom CSS for additional styling if needed
 
 const Enrollment = () => {
-  const [courses, setCourses] = useState([]); // State to store courses
-  const [loading, setLoading] = useState(true); // Loading state
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     studentId: "",
     phoneNumber: "",
@@ -18,11 +19,11 @@ const Enrollment = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Fetched courses:", data); // Debugging
-        setCourses(data.courses || []); // Safely handle missing data
+        console.log("Fetched courses:", data);
+        setCourses(data.courses || []);
+        setLoading(false); // Stop loading after fetching courses
       } catch (error) {
-        console.error("Error fetching courses:", error); // Debugging
-      } finally {
+        console.error("Error fetching courses:", error);
         setLoading(false);
       }
     };
@@ -42,7 +43,6 @@ const Enrollment = () => {
     e.preventDefault();
     console.log("Form data submitted:", formData);
 
-    // Send form data to the backend API
     try {
       const response = await fetch("http://127.0.0.1:5000/enrollments", {
         method: "POST",
@@ -59,7 +59,6 @@ const Enrollment = () => {
       const result = await response.json();
       console.log("Enrollment success:", result);
 
-      // Optionally, reset form after successful submission
       setFormData({
         studentId: "",
         phoneNumber: "",
@@ -73,34 +72,54 @@ const Enrollment = () => {
   };
 
   return (
-    <div>
-      <h1>Student Enrollment Form</h1>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="studentId">Student ID:</label>
-        <input
-          type="number"
-          id="studentId"
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        bgcolor: "background.default",
+        padding: 2,
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          width: "100%",
+          maxWidth: 500,
+          bgcolor: "white",
+          p: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Student Enrollment Form
+        </Typography>
+
+        <TextField
+          fullWidth
+          label="Student ID"
           name="studentId"
           value={formData.studentId}
           onChange={handleInputChange}
           required
+          sx={{ mb: 2 }}
         />
-        <br />
-        <br />
-
-        <label htmlFor="phoneNumber">Phone Number:</label>
-        <input
-          type="text"
-          id="phoneNumber"
+        <TextField
+          fullWidth
+          label="Phone Number"
           name="phoneNumber"
           value={formData.phoneNumber}
           onChange={handleInputChange}
           required
+          sx={{ mb: 2 }}
         />
-        <br />
-        <br />
 
-        <label htmlFor="courses">Select Courses:</label>
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          Select Courses:
+        </Typography>
         <select
           id="courses"
           name="selectedCourses"
@@ -116,6 +135,14 @@ const Enrollment = () => {
             })
           }
           required
+          style={{
+            width: "100%",
+            height: "150px",
+            padding: "8px",
+            marginBottom: "16px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+          }}
         >
           {loading ? (
             <option value="" disabled>
@@ -129,12 +156,18 @@ const Enrollment = () => {
             ))
           )}
         </select>
-        <br />
-        <br />
 
-        <button type="submit">Enroll</button>
-      </form>
-    </div>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
+        >
+          Enroll
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

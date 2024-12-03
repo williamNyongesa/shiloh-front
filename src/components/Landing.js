@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Button, Typography, Container, Card, CardContent } from '@mui/material';
-import { School as SchoolIcon, Book as BookIcon, People as PeopleIcon, SchoolTwoTone } from '@mui/icons-material';
+import { School as SchoolIcon, Book as BookIcon, People as PeopleIcon } from '@mui/icons-material';
 
-const Home = () => {
+const LandingPage = () => {
   return (
     <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
       <Box
@@ -19,28 +19,16 @@ const Home = () => {
       >
         <Box>
           <Typography variant="h2" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-            Welcome to Our School Platform
+            Welcome to Our School
           </Typography>
           <Typography variant="h5" sx={{ marginBottom: 3 }}>
-            Your journey to success begins here
+            Empowering Students to Succeed and Excel
           </Typography>
-          <Button variant="contained" color="secondary" size="large" href="/enrollment">
+          <Button variant="contained" color="secondary" size="large" href="/register">
             Get Started
           </Button>
         </Box>
       </Box>
-
-      <Container sx={{ paddingTop: 4, paddingBottom: 4 }}>
-        <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', marginBottom: 4 }}>
-          About Us
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4 }}>
-          <Typography variant="body1" sx={{ width: '60%', textAlign: 'center', color: 'gray' }}>
-            We are an online platform offering the best educational resources to help students excel.
-            Join our community today and start your learning journey with us.
-          </Typography>
-        </Box>
-      </Container>
 
       <Container sx={{ paddingTop: 4 }}>
         <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', marginBottom: 4 }}>
@@ -86,41 +74,6 @@ const Home = () => {
         </Box>
       </Container>
 
-      <Box sx={{ backgroundColor: '#e0e0e0', padding: 6 }}>
-        <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', marginBottom: 4 }}>
-          What Our Students Say
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4 }}>
-          <Card sx={{ boxShadow: 3, textAlign: 'center', width: 300 }}>
-            <CardContent>
-              <Typography variant="body1" sx={{ color: 'gray' }}>
-                "This platform has helped me improve my skills. The courses are great and the resources are amazing!"
-              </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', marginTop: 2 }}>
-                John Doe
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'gray' }}>
-                Student
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <Card sx={{ boxShadow: 3, textAlign: 'center', width: 300 }}>
-            <CardContent>
-              <Typography variant="body1" sx={{ color: 'gray' }}>
-                "I love the community here. The support I get from peers and teachers is invaluable."
-              </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 'bold', marginTop: 2 }}>
-                Jane Smith
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'gray' }}>
-                Student
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      </Box>
-
       <Box
         sx={{
           backgroundColor: '#3f51b5',
@@ -154,4 +107,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default LandingPage;

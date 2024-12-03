@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Typography, Box, Alert } from '@mui/material';
+import axios from 'axios';
+import { useAuth } from './context/AuthContext.js';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
+  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -17,86 +23,95 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       try {
-        console.log('Logging in with username:', values.username);
-
-        const response = await fetch('http://127.0.0.1:5000/users/login', {
-          method: 'POST',
+        const response = await axios.post('http://127.0.0.1:5000/users/login', values, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(values),
         });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Network response was not ok');
+        if (response.status === 200) {
+          const { access_token, username, email, role } = response.data;
+
+          // Ensure the data exists in the response
+          if (access_token && username && email && role) {
+            login(access_token, { username, email, role });
+            navigate('/');
+          } else {
+
+            setErrorMessage('Invalid login data received.');
+          }
         }
-
-        const data = await response.json();
-        console.log('Login success:', data);
-
-        // Navigate to the homepage on successful login
-        navigate('/');
       } catch (error) {
-        console.error('Error during login:', error);
+        console.error('Login failed:', error);
+        setErrorMessage(error.response ? error.response.data.error : 'Error during login. Please try again.');
       }
     },
   });
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-center">Login</h2>
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="username" className="block mb-1 text-sm font-medium text-gray-700">
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.username && formik.errors.username ? 'border-red-500' : 'border-gray-300'
-              }`}
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.username && formik.errors.username && (
-              <div className="mt-1 text-sm text-red-500">{formik.errors.username}</div>
-            )}
-          </div>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      bgcolor="background.default"
+    >
+      <Box
+        component="form"
+        onSubmit={formik.handleSubmit}
+        width="100%"
+        maxWidth="400px"
+        bgcolor="white"
+        p={4}
+        borderRadius={2}
+        boxShadow={3}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Login
+        </Typography>
 
-          <div>
-            <label htmlFor="password" className="block mb-1 text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.password && formik.errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.password && formik.errors.password && (
-              <div className="mt-1 text-sm text-red-500">{formik.errors.password}</div>
-            )}
-          </div>
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
 
-          <button
-            type="submit"
-            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Login
-          </button>
-        </form>
-      </div>
-    </div>
+        <TextField
+          fullWidth
+          label="Username"
+          name="username"
+          variant="outlined"
+          margin="normal"
+          value={formik.values.username}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.username && Boolean(formik.errors.username)}
+          helperText={formik.touched.username && formik.errors.username}
+        />
+        <TextField
+          fullWidth
+          label="Password"
+          name="password"
+          type="password"
+          variant="outlined"
+          margin="normal"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+        />
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          type="submit"
+          sx={{ mt: 2 }}
+        >
+          Login
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

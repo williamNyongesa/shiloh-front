@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { TextField, Button, Box, Container, Typography, CircularProgress } from "@mui/material";
-import { useNavigate } from "react-router-dom";  // Import useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom";  
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();  // Use useNavigate hook for navigation
+  const navigate = useNavigate();  
 
-  // Handle form submission
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -22,13 +21,10 @@ const Login = () => {
         password,
       });
 
-      // Assuming the response contains a JWT token on successful login
       if (response.data.token) {
-        // Store token in localStorage (or use context, redux for global state)
+        console.log(response)
         localStorage.setItem("auth_token", response.data.token);
-        
-        // Redirect to dashboard or home page using useNavigate
-        navigate("/dashboard");
+        navigate("/admin");
       }
     } catch (err) {
       setError("Invalid username or password");

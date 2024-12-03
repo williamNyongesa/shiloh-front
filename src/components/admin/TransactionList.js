@@ -1,4 +1,6 @@
-import Pagination from "./Pagination";
+import React from 'react';
+import { Box, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
+import Pagination from './Pagination';
 
 const TransactionList = () => {
   const transactions = [
@@ -9,22 +11,33 @@ const TransactionList = () => {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="font-semibold text-lg mb-4">Latest Transactions</h3>
-      <ul className="space-y-4">
+    <Box sx={{ backgroundColor: 'white', borderRadius: 2, boxShadow: 3, padding: 4 }}>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
+        Latest Transactions
+      </Typography>
+      <List>
         {transactions.map((transaction, index) => (
-          <li key={index} className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-gray-800">{transaction.id}</p>
-              <p className="text-gray-500">{transaction.name}</p>
-            </div>
-            <p className="font-semibold text-gray-800">{transaction.amount}</p>
-            <p className="text-gray-500">{transaction.time}</p>
-          </li>
+          <ListItem key={index} sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
+            <Box>
+              <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
+                {transaction.id}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'gray' }}>
+                {transaction.name}
+              </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+              {transaction.amount}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'gray' }}>
+              {transaction.time}
+            </Typography>
+          </ListItem>
         ))}
-        </ul>
-        <Pagination />
-    </div>
+      </List>
+      <Divider sx={{ marginY: 2 }} />
+      <Pagination sx={{ display: 'flex' }}/>
+    </Box>
   );
 };
 

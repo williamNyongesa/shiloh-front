@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { Button, TextField, CircularProgress, Box, Typography, Paper } from '@mui/material';
+import { Button, TextField, CircularProgress, Box, Typography, Paper, MenuItem } from '@mui/material';
 
 const Signup = () => {
   const [loading, setLoading] = useState(false);
@@ -66,12 +66,14 @@ const Signup = () => {
         alignItems: 'center',
         minHeight: '100vh',
         backgroundColor: '#f0f4f8',
+        padding: 2, 
       }}
     >
       <Paper
         sx={{
           padding: 4,
           width: '100%',
+          maxWidth: 480,
           borderRadius: 2,
           boxShadow: 3,
         }}
@@ -147,6 +149,7 @@ const Signup = () => {
             helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
           />
 
+          {/* Role Selection Dropdown */}
           <TextField
             fullWidth
             select
@@ -160,14 +163,11 @@ const Signup = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.role && Boolean(formik.errors.role)}
             helperText={formik.touched.role && formik.errors.role}
-            SelectProps={{
-              native: true,
-            }}
           >
-            <option value="">Select a role</option>
-            <option value="admin">Admin</option>
-            <option value="student">Student</option>
-            <option value="teacher">Teacher</option>
+            <MenuItem value="">Select a role</MenuItem>
+            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="student">Student</MenuItem>
+            <MenuItem value="teacher">Teacher</MenuItem>
           </TextField>
 
           <Button
