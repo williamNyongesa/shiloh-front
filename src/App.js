@@ -1,16 +1,16 @@
 import { Route, Routes } from 'react-router-dom';
-import Navbar from './Navbar';
-import Home from './Home';
-import Signup from './Signup';
-import Login from './Login';
-import Admin from './admin/Admin';
-import StudentDashboard from './students/StudentDashboard';
-import { StudentRegistration } from './students/StudentRegistration';
-import Enrollment from './enrollment/Enrollment';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Signup from './components/Signup';
+import Login from './components/Login';
+import Admin from './pages/Admin';
+import StudentDashboard from './components/students/StudentDashboard';
+import { StudentRegistration } from './components/students/StudentRegistration';
+import Enrollment from './pages/enrollment/Enrollment';
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
-import LandingPage from './Landing';
-import { ProtectedRoute } from './context/AuthContext';
+import LandingPage from './components/Landing';
+import { ProtectedRoute } from './components/context/AuthContext';
 
 function App() {
   const theme = createTheme({

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, AppBar, Toolbar, IconButton } from "@mui/material";
+import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Avatar } from "@mui/material";
 import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon, Menu as MenuIcon, Grading as GradingIcon } from "@mui/icons-material";
-import TransactionList from './TransactionList';
-import Header from './Header';
+import TransactionList from '../components/admin/TransactionList';
+import Header from '../components/admin/Header';
 import { useNavigate } from 'react-router-dom';
 
 const Admin = () => {
@@ -10,15 +10,16 @@ const Admin = () => {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
 
-  const user = localStorage.getItem('user')
+  const user = JSON.parse(localStorage.getItem('user'));
+
   useEffect(() => {
-  //   if (user.role !== 'admin') {
-  //     navigate('/home');  
-  //   }
-  // }, [user, navigate]);
-  },[]);
+    if (user.role !== 'admin') {
+      navigate('/home');
+    }
+  }, [user, navigate]);
+
   return (
-    // user.role === 'admin' ? (  
+    user.role === 'admin' ? (
       <Box sx={{ display: "flex", height: "100%" }}>
         <Drawer
           sx={{
@@ -44,14 +45,14 @@ const Admin = () => {
         >
           <Box sx={{ padding: 4 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <img
-                src="https://via.placeholder.com/50"
+              <Avatar
+                src={user.avatar || "https://via.placeholder.com/50"}
                 alt="Profile"
-                style={{ width: 50, height: 50, borderRadius: "50%" }}
+                sx={{ width: 50, height: 50 }}
               />
               <Box>
                 <Typography variant="body2">Welcome</Typography>
-                <Typography variant="h6">{user.username} K</Typography>
+                <Typography variant="h6">{user.username}</Typography>
                 <Typography variant="body2" sx={{ color: "gray" }}>Admin</Typography>  {/* Role Display */}
               </Box>
             </Box>
@@ -75,7 +76,7 @@ const Admin = () => {
           <TransactionList />
         </Box>
       </Box>
-    // ) : null 
+    ) : null
   );
 };
 

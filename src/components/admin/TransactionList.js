@@ -1,42 +1,103 @@
-import React from 'react';
-import { Box, List, ListItem, ListItemText, Typography, Divider } from '@mui/material';
-import Pagination from './Pagination';
+import React, { useEffect, useState } from 'react';
+import { Box, List, ListItem, Typography, Divider, Skeleton } from '@mui/material';
+import Pagination from '@mui/material/Pagination';
 
 const TransactionList = () => {
-  const transactions = [
-    { id: "#KLA-237-393-950", name: "CodeAstrology.com", amount: "$4,67,859", time: "5 min ago" },
-    { id: "#KLA-237-393-950", name: "HSJ Express.com", amount: "$89,859", time: "10 min ago" },
-    { id: "#KLA-237-393-950", name: "InventiveShamin.Inc", amount: "$3,43,67,859", time: "15 min ago" },
-    { id: "#KLA-237-393-950", name: "AvadaroLife.Inc", amount: "$2,07,859", time: "20 min ago" },
-  ];
+  const [transactions, setTransactions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); 
+  const [loading, setLoading] = useState(true);  // State for loading indication
+  
+  const fetchTransactions = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/finances');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setTransactions(data); 
+      setLoading(false); 
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching transaction data:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions(); 
+  }, []);
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value); 
+  };
+
+  const indexOfLastTransaction = currentPage * itemsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - itemsPerPage;
+  const currentTransactions = transactions.slice(indexOfFirstTransaction, indexOfLastTransaction);
 
   return (
     <Box sx={{ backgroundColor: 'white', borderRadius: 2, boxShadow: 3, padding: 4 }}>
       <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
         Latest Transactions
       </Typography>
-      <List>
-        {transactions.map((transaction, index) => (
-          <ListItem key={index} sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
-            <Box>
-              <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-                {transaction.id}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'gray' }}>
-                {transaction.name}
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-              {transaction.amount}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'gray' }}>
-              {transaction.time}
-            </Typography>
-          </ListItem>
-        ))}
-      </List>
+      
+      {loading ? (
+        <List>
+          {[...Array(5)].map((_, index) => (
+            <ListItem key={index} sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
+              <Box>
+                <Skeleton variant="text" width="150px" />
+              </Box>
+
+              <Box>
+                <Skeleton variant="text" width="80px" />
+              </Box>
+
+              <Box>
+                <Skeleton variant="text" width="120px" />
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <List>
+          {currentTransactions.length === 0 ? (
+            <Typography>No transactions available</Typography>
+          ) : (
+            currentTransactions.map((t) => (
+              <ListItem key={t.id} sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'gray' }}>
+                    {t.transaction_type}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="body1" color="primary" sx={{ fontWeight: 'bold' }}>
+                    Ksh {t.amount}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="body2" sx={{ color: 'gray' }}>
+                    {t.date}
+                  </Typography>
+                </Box>
+              </ListItem>
+            ))
+          )}
+        </List>
+      )}
+      
       <Divider sx={{ marginY: 2 }} />
-      <Pagination sx={{ display: 'flex' }}/>
+      
+      <Pagination
+        count={Math.ceil(transactions.length / itemsPerPage)} 
+        page={currentPage} 
+        onChange={handlePageChange} 
+        color="primary"
+      />
     </Box>
   );
 };

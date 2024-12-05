@@ -4,7 +4,7 @@ import { NavigateBefore, NavigateNext } from '@mui/icons-material';
 
 const Pagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5; // Define total pages
+  const totalPages = 5;
 
   const handleNext = () => {
     if (currentPage < totalPages) {

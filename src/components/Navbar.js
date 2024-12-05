@@ -15,12 +15,18 @@ const Navbar = () => {
   };
 
   const handleMenuClose = () => {
-    setDrawerOpen(false);
+    setDrawerOpen(false);  
   };
 
   const handleLogout = () => {
-    logout(); 
-    navigate('/login'); 
+    logout();
+    setDrawerOpen(false);  
+    navigate('/login');
+  };
+
+  const handleLogin = () => {
+    setDrawerOpen(false);  
+    navigate('/login');
   };
 
   const menuItems = [
@@ -39,7 +45,7 @@ const Navbar = () => {
       return true;
     }
     return false;
-  });
+  }).filter(item => !(isAuthenticated() && item.label === 'Sign Up'));
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: '#1976d2', zIndex: 1333, width: '100%', display: 'flex' }}>
@@ -93,8 +99,7 @@ const Navbar = () => {
             </Button>
           ) : (
             <Button
-              component={Link}
-              to="/login"
+              onClick={handleLogin}
               sx={{
                 color: '#fff',
                 fontWeight: '500',
@@ -155,7 +160,7 @@ const Navbar = () => {
                   </ListItemText>
                 </ListItem>
               ) : (
-                <ListItem button component={Link} to="/login">
+                <ListItem button onClick={handleLogin}>
                   <ListItemText>
                     <Button
                       sx={{

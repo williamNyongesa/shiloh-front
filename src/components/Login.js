@@ -33,18 +33,19 @@ const Login = () => {
 
           if (access_token && username && email && role) {
             login(access_token, { username, role });
-            if(role === 'student')
-              navigate('/enrollment');
-            if(role=== 'admin')
-              navigate('/admin')
+            if (role === 'student') navigate('/enrollment');
+            if (role === 'admin') navigate('/admin');
           } else {
-
             setErrorMessage('Invalid login data received.');
           }
         }
       } catch (error) {
-        console.error('Login failed:', error);
-        setErrorMessage(error.response ? error.response.data.error : 'Error during login. Please try again.');
+        const errorMsg = error.response
+          ? error.response.data.error || 'Error during login. Please try again.'
+          : 'Network error. Please try again later.';
+
+        setErrorMessage(errorMsg); 
+        console.error('Login failed:', errorMsg);
       }
     },
   });
