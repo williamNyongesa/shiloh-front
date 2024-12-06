@@ -32,7 +32,7 @@ const Login = () => {
           const { access_token, username, email, role } = response.data;
 
           if (access_token && username && email && role) {
-            login(access_token, { username, role });
+            login(access_token, { username, role, email });
             if (role === 'student') navigate('/enrollment');
             if (role === 'admin') navigate('/admin');
           } else {
