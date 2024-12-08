@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
+import { Box, Typography, TextField, Button, CircularProgress, Snackbar, Alert } from "@mui/material";
 import "./enrollment.css"; // Ensure that you also apply any custom CSS for additional styling if needed
 
 const Enrollment = () => {
@@ -10,6 +10,9 @@ const Enrollment = () => {
     phoneNumber: "",
     selectedCourses: [],
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar visibility
+  const [snackbarMessage, setSnackbarMessage] = useState(""); // Message to display in Snackbar
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Severity of the Snackbar (success or error)
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -44,13 +47,24 @@ const Enrollment = () => {
     console.log("Form data submitted:", formData);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/enrollments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const bodyData = JSON.stringify({
+        phone_number: formData.phoneNumber,
+        courses: formData.selectedCourses,
+        student_id: formData.studentId,
       });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: bodyData,
+        redirect: "follow",
+      };
+
+      // Use async/await for the fetch request
+      const response = await fetch("http://127.0.0.1:5000/enrollments", requestOptions);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -59,16 +73,26 @@ const Enrollment = () => {
       const result = await response.json();
       console.log("Enrollment success:", result);
 
+      // Reset form data after successful enrollment
       setFormData({
         studentId: "",
         phoneNumber: "",
         selectedCourses: [],
       });
-      alert("Enrollment successful!");
+
+      setSnackbarSeverity("success");
+      setSnackbarMessage("Course registered successfully!");
+      setSnackbarOpen(true);
     } catch (error) {
       console.error("Error submitting form data:", error);
-      alert("Error during enrollment. Please try again.");
+      setSnackbarSeverity("error");
+      setSnackbarMessage("Course registration unsuccessful. Please try again.");
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false); // Close the Snackbar
   };
 
   return (
@@ -145,7 +169,8 @@ const Enrollment = () => {
           }}
         >
           {loading ? (
-            <option value="" disabled>
+            <option value="">
+              <CircularProgress />
               Loading courses...
             </option>
           ) : (
@@ -167,6 +192,22 @@ const Enrollment = () => {
           Enroll
         </Button>
       </Box>
+
+      {/* Snackbar for success/error message */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

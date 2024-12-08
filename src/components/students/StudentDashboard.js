@@ -8,6 +8,10 @@ import { SlCalender } from "react-icons/sl";
 import { PiStudent } from "react-icons/pi";
 import StudentdashboardOverview, { renderCourses } from "./dashboardOverview";
 import SettingsPage from "./Settings";
+import QuizzesPage from "./Quizzes";
+import SchoolCalendar from "./Calender";
+import StudentReport from "./StudentReport";
+import EventsPage from "./StudentEvent";
 
 const StudentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -111,11 +115,11 @@ const StudentDashboard = () => {
           >
             Courses
           </Button>
-          {/* <Button
+          <Button
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<MdAssignment />}
-            onClick={() => setSelectedSection('quizzes')}
+            onClick={() => handleLinkClick(<QuizzesPage/>)}
           >
             Quizzes
           </Button>
@@ -131,7 +135,7 @@ const StudentDashboard = () => {
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<PiStudent />}
-            onClick={() => setSelectedSection('students')}
+            onClick={() => handleLinkClick(<SchoolCalendar/>)}
           >
             Students
           </Button>
@@ -139,15 +143,15 @@ const StudentDashboard = () => {
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<HiOutlineDocumentReport />}
-            onClick={() => setSelectedSection('report')}
-          >
+            onClick={() => handleLinkClick(<StudentReport/>)}
+            >
             Report
           </Button>
           <Button
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<SlCalender />}
-            onClick={() => setSelectedSection('calendar')}
+            onClick={() => handleLinkClick(<SchoolCalendar/>)}
           >
             Calendar
           </Button>
@@ -155,10 +159,10 @@ const StudentDashboard = () => {
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<MdEvent />}
-            onClick={() => setSelectedSection('events')}
+            onClick={() => handleLinkClick(<EventsPage/>)}
           >
             Events
-          </Button> */}
+          </Button>
           <Divider />
           <Button
             fullWidth

@@ -39,6 +39,7 @@ export const StudentRegistration = () => {
                     },
                     body: JSON.stringify(values),
                 });
+                console.log(values)
 
                 if (response.ok) {
                     const data = await response.json();

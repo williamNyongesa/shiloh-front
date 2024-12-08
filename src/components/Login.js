@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext.js';
+import {login as userLogin} from '../api.js'
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -22,6 +23,8 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       try {
+        // let userResponse = userLogin(values);
+        // console.log('this is for debugging',userResponse);
         const response = await axios.post('http://127.0.0.1:5000/users/login', values, {
           headers: {
             'Content-Type': 'application/json',
