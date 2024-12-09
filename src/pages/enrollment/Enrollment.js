@@ -19,7 +19,7 @@ const Enrollment = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(`${baseUrl}/enrollments/courses`);
+        const response = await fetch(`https://shiloh-server.onrender.com/enrollments/courses`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
