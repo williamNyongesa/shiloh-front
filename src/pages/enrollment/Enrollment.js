@@ -13,11 +13,13 @@ const Enrollment = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar visibility
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Message to display in Snackbar
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Severity of the Snackbar (success or error)
+  const baseUrl = process.env.BASE_URL;
+
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:5000/enrollments/courses");
+        const response = await fetch(`${baseUrl}/enrollments/courses`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -64,7 +66,7 @@ const Enrollment = () => {
       };
 
       // Use async/await for the fetch request
-      const response = await fetch("http://127.0.0.1:5000/enrollments", requestOptions);
+      const response = await fetch(`https://shiloh-server.onrender.com/enrollments`, requestOptions);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

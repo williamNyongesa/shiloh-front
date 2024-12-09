@@ -17,6 +17,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.7",
+    "dotenv": "^16.4.7",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "notistack": "^3.0.1",

@@ -7,6 +7,8 @@ const Header = () => {
   const [filteredResults, setFilteredResults] = useState([]); 
   const [inputValue, setInputValue] = useState(""); 
   const [isLoading, setIsLoading] = useState(false); 
+  const baseUrl = process.env.BASE_URL;
+
   // move this section to an isolated file for reusability
   // #####################################################################
   const debounce = (func, delay) => {
@@ -26,7 +28,7 @@ const Header = () => {
   
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/finances`);
+      const response = await fetch(`https://shiloh-server.onrender.com/finances`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

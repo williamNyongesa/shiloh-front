@@ -11,6 +11,8 @@ export const StudentRegistration = () => {
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     const [loading, setLoading] = useState(false)
+    const baseUrl = process.env.BASE_URL;
+
 
     const formik = useFormik({
         initialValues: {
@@ -32,7 +34,7 @@ export const StudentRegistration = () => {
         onSubmit: async (values) => {
             setLoading(true);
             try {
-                const response = await fetch("http://127.0.0.1:5000/students", {
+                const response = await fetch(`https://shiloh-server.onrender.com/students`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

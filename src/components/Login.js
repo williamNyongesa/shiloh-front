@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext.js';
-import {login as userLogin} from '../api.js'
+import { login as userLogin } from '../api.js';
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const baseUrl = process.env.REACT_APP_BASE_URL;  // Correct access to environment variable
+  console.log('Base URL:', baseUrl);  // Log to ensure it is loaded
 
   const formik = useFormik({
     initialValues: {
@@ -23,9 +25,7 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       try {
-        // let userResponse = userLogin(values);
-        // console.log('this is for debugging',userResponse);
-        const response = await axios.post('http://127.0.0.1:5000/users/login', values, {
+        const response = await axios.post(`https://shiloh-server.onrender.com/users/login`, values, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -47,7 +47,7 @@ const Login = () => {
           ? error.response.data.error || 'Error during login. Please try again.'
           : 'Network error. Please try again later.';
 
-        setErrorMessage(errorMsg); 
+        setErrorMessage(errorMsg);
         console.error('Login failed:', errorMsg);
       }
     },

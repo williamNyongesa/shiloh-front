@@ -13,6 +13,8 @@ import { ProtectedRoute } from './components/context/AuthContext';
 import { ThemeProvider as MuiThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { ThemeProvider, useTheme } from './components/context/ThemeContext';
 
+// require('dotenv').config()
+
 function App() {
   const { darkMode } = useTheme();
   const theme = createTheme({

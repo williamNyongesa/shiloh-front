@@ -3,7 +3,7 @@ import { Box, Paper, Typography, Button, Skeleton } from "@mui/material";
 import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon } from "@mui/icons-material";
 import { GrAchievement } from "react-icons/gr";
 import { FaAward } from "react-icons/fa";
-import axios from "axios";  // Use axios to fetch data
+import axios from "axios";
 
 let renderStats = null;
 let renderCourses = null;
@@ -18,22 +18,26 @@ const stats = [
 const StudentdashboardOverview = () => {
   const [courses, setCourses] = useState([]);  // State to hold the fetched courses
   const [loading, setLoading] = useState(true);  // State to manage loading state
-
-  // Fetch courses from the backend
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:5000/enrollments"); // Replace with your actual API endpoint
-      setCourses(response.data); // Assuming the data is in response.data
-      setLoading(false);  // Data is loaded, set loading to false
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-      setLoading(false);  // Stop loading in case of an error
-    }
-  };
+  const baseUrl = process.env.BASE_URL;
 
   useEffect(() => {
-    fetchCourses(); // Call the function to fetch courses on component mount
-  }, []);
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);  // Set loading to true when fetching starts
+        const response = await axios.get("https://shiloh-server.onrender.com/enrollments/courses"); // Replace with your actual API endpoint
+        // Ensure courses is always an array
+        const coursesData = Array.isArray(response.data.courses) ? response.data.courses : [];
+        setCourses(coursesData);  // Update the state with the fetched courses
+        setLoading(false);  // Set loading to false once the data is fetched
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        setCourses([]);  // Set empty array in case of error
+        setLoading(false);  // Set loading to false after error
+      }
+    };
+
+    fetchCourses();  // Call fetchCourses when the component mounts
+  }, []); 
 
   // Render Courses UI
   renderCourses = () => (
@@ -57,18 +61,22 @@ const StudentdashboardOverview = () => {
           ))
         ) : (
           // Render actual courses after loading
-          courses.map((course, index) => (
-            <Box key={index} sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-              <Box>
-                <Typography variant="body1" sx={{ fontWeight: "bold" }}>{course.title}</Typography>
-                <Typography variant="body2" sx={{ color: "gray" }}>Lorem ipsum is simply dummy text.</Typography>
-                <Box sx={{ width: "100%", height: 6, backgroundColor: "#e0e0e0", mt: 1 }}>
-                  <Box sx={{ width: `${course.progress}%`, height: "100%", backgroundColor: "#388e3c" }} />
+          courses.length > 0 ? (
+            courses.map((course, index) => (
+              <Box key={index} sx={{ display: "flex", justifyContent: "space-between", mb: 3, flexDirection: "column" }}>
+                <Box>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }} color="secondary">{course}</Typography>
+                  <Typography variant="body2" sx={{ color: "gray" }}>Progress: {Math.random()*100}%</Typography>
+                  <Box sx={{ width: "100%", height: 6, backgroundColor: "#e0e0e0", mt: 1 }}>
+                    <Box sx={{ width: `${Math.random()*100}}%`, height: "100%", backgroundColor: "#388e3c" }} />
+                  </Box>
                 </Box>
+                <Button sx={{ color: "primary.main" }}>Continue</Button>
               </Box>
-              <Button sx={{ color: "primary.main" }}>Continue</Button>
-            </Box>
-          ))
+            ))
+          ) : (
+            <Typography variant="body2" sx={{ color: "gray" }}>No courses available</Typography>
+          )
         )}
       </Paper>
     </Box>

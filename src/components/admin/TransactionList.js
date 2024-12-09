@@ -7,10 +7,12 @@ const TransactionList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); 
   const [loading, setLoading] = useState(true);  // State for loading indication
+  const baseUrl = process.env.BASE_URL;
+
   
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://localhost:5000/finances');
+      const response = await fetch(`https://shiloh-server.onrender.com/finances`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

@@ -8,6 +8,8 @@
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const navigate = useNavigate();
+    const baseUrl = process.env.BASE_URL;
+
 
     const formik = useFormik({
       initialValues: {
@@ -33,7 +35,7 @@
         setErrorMessage(null);
 
         try {
-          const response = await fetch('http://127.0.0.1:5000/users', {
+          const response = await fetch(`https://shiloh-server.onrender.com/users`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

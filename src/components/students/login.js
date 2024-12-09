@@ -8,7 +8,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();  
+  const navigate = useNavigate();
+  const baseUrl = process.env.BASE_URL;
+  
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -16,7 +18,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/users/login", {
+      const response = await axios.post(`https://shiloh-server.onrender.com/users/login`, {
         username,
         password,
       });

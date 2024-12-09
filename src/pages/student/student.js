@@ -8,6 +8,8 @@ const App = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const baseUrl = process.env.BASE_URL;
+
 
   useEffect(() => {
     fetchStudents();
@@ -15,7 +17,7 @@ const App = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/students");
+      const response = await axios.get(`https://shiloh-server.onrender.com/students`);
       setStudents(response.data);
     } catch (error) {
       console.error("There was an error fetching students!", error);
@@ -26,7 +28,7 @@ const App = () => {
     if (!newStudentName) return;
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/students", { name: newStudentName });
+      await axios.post(`https://shiloh-server.onrender.com/students`, { name: newStudentName });
       setNewStudentName("");
       fetchStudents();
     } catch (error) {
@@ -38,7 +40,7 @@ const App = () => {
 
   const deleteStudent = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/students/${id}`);
+      await axios.delete(`https://shiloh-server.onrender.com/students/${id}`);
       fetchStudents();
     } catch (error) {
       console.error("There was an error deleting the student!", error);
@@ -54,7 +56,7 @@ const App = () => {
     if (!selectedStudent?.name) return;
     setLoading(true);
     try {
-      await axios.put(`http://localhost:5000/students/${selectedStudent.id}`, { name: selectedStudent.name });
+      await axios.put(`https://shiloh-server.onrender.com/students/${selectedStudent.id}`, { name: selectedStudent.name });
       setOpenDialog(false);
       fetchStudents();
     } catch (error) {
