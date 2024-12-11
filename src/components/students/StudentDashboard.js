@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Skeleton, Avatar } from "@mui/material";
 import { MdAssignment, MdEvent } from "react-icons/md";
-import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon } from "@mui/icons-material";
+import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Payment } from "@mui/icons-material";
 import { CiSettings } from "react-icons/ci";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { SlCalender } from "react-icons/sl";
@@ -12,6 +12,7 @@ import QuizzesPage from "./Quizzes";
 import SchoolCalendar from "./Calender";
 import StudentReport from "./StudentReport";
 import EventsPage from "./StudentEvent";
+import FinancePage from "./Finance";
 
 const StudentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -163,6 +164,14 @@ const StudentDashboard = () => {
           >
             Events
           </Button>
+          <Button
+            fullWidth
+            sx={{ color: "white", textAlign: "left", padding: 1 }}
+            startIcon={<Payment/>}
+            onClick={() => handleLinkClick(<FinancePage/>)}
+          >
+            payment
+          </Button>
           <Divider />
           <Button
             fullWidth
@@ -186,6 +195,7 @@ const StudentDashboard = () => {
       <Box sx={{ flexGrow: 1, padding: 4, color: "#fff" }}>
         <Paper sx={{ padding: 3, boxShadow: 3}}>
           <Typography variant="h4" align="center">WELCOME TO SHILOH</Typography>
+          <Typography variant="body2" align="center">register as to start session</Typography>
         </Paper>
         {currentComponent}
       </Box>
