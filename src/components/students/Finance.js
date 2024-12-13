@@ -1,112 +1,106 @@
-import React, { useState } from 'react';
-import { Button, TextField, Container, Typography, Paper, Box } from '@mui/material';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import React from 'react';
+import { Container, Box, Typography, Paper, Button, Divider } from '@mui/material';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import StripeCheckout from 'react-stripe-checkout';
 
-// Replace this with your Stripe public key
-const STRIPE_PUBLIC_KEY = 'your-stripe-public-key-here'; // Replace with your actual key
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+// Sample financial data
+const financialData = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  datasets: [
+    {
+      label: 'Outstanding Balance',
+      data: [200, 150, 180, 120, 100, 60],
+      borderColor: 'rgba(75,192,192,1)',
+      backgroundColor: 'rgba(75,192,192,0.2)',
+      fill: true,
+    },
+  ],
+};
 
-const FinancePage = () => {
-  const [amount, setAmount] = useState('');
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [error, setError] = useState(null);
+const studentFinancialInfo = {
+  name: "John Doe",
+  studentId: "S12345678",
+  balance: 60,  // Final outstanding balance
+  totalPaid: 1500,
+  totalDue: 1800,
+};
 
-  const handleSubmitPayment = async (event, stripe, elements) => {
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    const cardElement = elements.getElement(CardElement);
-
-    // Create a payment method with the card details
-    const { token, error: stripeError } = await stripe.createToken(cardElement);
-
-    if (stripeError) {
-      setError(stripeError.message);
-      return;
-    }
-
-    // Make a request to your Flask backend to process the payment with the token
-    try {
-      const response = await fetch('http://localhost:5000/api/charge', {  // Adjust the URL if your Flask app is hosted elsewhere
-        method: 'POST',
-        body: JSON.stringify({ token: token.id, amount: amount }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        setPaymentSuccess(true);
-        setError(null);
-      } else {
-        setError('Payment failed. Please try again.');
-      }
-    } catch (err) {
-      setError('Payment failed. Please try again.');
-    }
+const PaymentSection = () => {
+  const handleToken = (token) => {
+    console.log('Payment Success', token);
+    // Call your backend API to handle the Stripe payment
   };
 
   return (
-    <Box sx={{margin:"2rem", padding:3}}>
-        <Container maxWidth="sm">
-        <Paper style={{ padding: 16 }}>
-            <Typography variant="h4" gutterBottom>
-            Student Payment Page
-            </Typography>
-
-            <Typography variant="body1" gutterBottom>
-            Please enter the amount you want to pay.
-            </Typography>
-
-            <TextField
-            label="Amount"
-            type="number"
-            fullWidth
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            margin="normal"
-            />
-
-            <Typography variant="h6" gutterBottom>
-            Enter Payment Details:
-            </Typography>
-
-            <Elements stripe={stripePromise}>
-            <CardPaymentForm handleSubmit={handleSubmitPayment} />
-            </Elements>
-
-            {paymentSuccess && <Typography color="green">Payment Successful!</Typography>}
-            {error && <Typography color="red">{error}</Typography>}
-        </Paper>
-        </Container>
-    </Box>
+    <Paper sx={{ padding: 2 }}>
+      <Typography variant="h6">Pay Your Fees</Typography>
+      <Divider sx={{ marginY: 2 }} />
+      <StripeCheckout
+        stripeKey="your-publishable-key"  // Use your Stripe public key
+        token={handleToken}
+        amount={studentFinancialInfo.balance * 100}  // Convert to cents
+        name="Student Fee Payment"
+        description="Pay for your outstanding balance"
+        currency="USD"
+      >
+        <Button variant="contained" color="primary">Pay Now</Button>
+      </StripeCheckout>
+    </Paper>
   );
 };
 
-const CardPaymentForm = ({ handleSubmit }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-
+const FinancialDashboard = () => {
   return (
-    <Box>
-        <form onSubmit={(e) => handleSubmit(e, stripe, elements)}>
-            <CardElement style={{ marginBottom: '16px' }} />
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disabled={!stripe}
-                fullWidth
-                >
-                Pay Now
-            </Button>
-        </form>
+    <Box sx={{ display: 'flex' }}> {/* Prevent horizontal overflow */}
+      <Container maxWidth="lg">
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, padding: 2 }}>
+          <Typography variant="h4" gutterBottom color="secondary">
+            Welcome, {studentFinancialInfo.name}
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, width: '100%' }}>
+            {/* Financial Overview */}
+            <Box sx={{ flex: '1 1 100%', sm: '1 1 30%', maxWidth: '100%' }}>
+              <Paper sx={{ padding: 2 }}>
+                <Typography variant="h6">Student ID</Typography>
+                <Typography variant="body1">{studentFinancialInfo.studentId}</Typography>
+              </Paper>
+            </Box>
+
+            <Box sx={{ flex: '1 1 100%', sm: '1 1 30%', maxWidth: '100%' }}>
+              <Paper sx={{ padding: 2 }}>
+                <Typography variant="h6">Total Balance</Typography>
+                <Typography variant="body1">${studentFinancialInfo.balance}</Typography>
+              </Paper>
+            </Box>
+
+            <Box sx={{ flex: '1 1 100%', sm: '1 1 30%', maxWidth: '100%' }}>
+              <Paper sx={{ padding: 2 }}>
+                <Typography variant="h6">Total Paid</Typography>
+                <Typography variant="body1">${studentFinancialInfo.totalPaid}</Typography>
+              </Paper>
+            </Box>
+          </Box>
+
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, width: '100%' }}>
+            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 60%' }, display: 'flex', flexDirection: 'column', maxWidth: '95%' }}>
+              <Paper sx={{ padding: 2 }}>
+                <Typography variant="h6" gutterBottom>Financial Overview</Typography>
+                <Line data={financialData} options={{ responsive: true }} />
+              </Paper>
+            </Box>
+
+            <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 40%' }, display: 'flex', flexDirection: 'column', maxWidth: '100%' }}>
+              <PaymentSection />
+            </Box>
+          </Box>
+        </Box>
+      </Container>
     </Box>
   );
 };
 
-export default FinancePage;
+export default FinancialDashboard;

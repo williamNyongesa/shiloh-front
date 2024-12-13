@@ -1,76 +1,79 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';  // Importing axios for API calls
 import { Box, Container, Typography, Paper, Card, CardContent, CardHeader, Divider, Skeleton, Button } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 
 const EventsPage = () => {
-  const [events, setEvents] = useState(null);  // Events state initialized as null to simulate loading state
+  const [events, setEvents] = useState(null);  // Initialize events state as null
+  const [loading, setLoading] = useState(true);  // Track loading state
 
-  // Simulating an API call to fetch events data
+  // Fetch events data from the backend API
   useEffect(() => {
-    setTimeout(() => {
-      setEvents([
-        {
-          title: 'Math Exam',
-          date: '2024-12-10',
-          description: 'Midterm exam for the Math 101 course.',
-          time: '10:00 AM - 12:00 PM',
-          location: 'Room 101'
-        },
-        {
-          title: 'School Sports Day',
-          date: '2024-12-12',
-          description: 'A day full of sporting events and competitions.',
-          time: '8:00 AM - 4:00 PM',
-          location: 'Sports Ground'
-        },
-        {
-          title: 'Parent-Teacher Meeting',
-          date: '2024-12-15',
-          description: 'A session for parents to meet teachers and discuss progress.',
-          time: '2:00 PM - 5:00 PM',
-          location: 'Room 202'
-        },
-        {
-          title: 'Cultural Night',
-          date: '2024-12-18',
-          description: 'A night showcasing cultural performances and activities.',
-          time: '6:00 PM - 9:00 PM',
-          location: 'Auditorium'
-        }
-      ]);
-    }, 2000);  // Simulate a 2-second delay for fetching events data
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/events');  // Replace with actual API endpoint
+        setEvents(response.data);  // Update the state with fetched events
+        setLoading(false);  // Set loading to false once data is fetched
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        setLoading(false);  // Set loading to false even on error
+      }
+    };
+    fetchEvents();
   }, []);
+
+  const handleCreateEvent = async () => {
+    const newEvent = {
+      title: 'New Event',
+      date: '2024-12-20',
+      description: 'A brand new event for the community.',
+      time: '10:00 AM - 12:00 PM',
+      location: 'Community Hall',
+    };
+
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/events/submit-event', newEvent);
+      setEvents((prevEvents) => [...prevEvents, response.data.event]);  // Add new event to the list
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
+  };
+
+  const handleUpdateEvent = async (eventId) => {
+    const updatedEvent = {
+      title: 'Updated Event',
+      date: '2024-12-21',
+      description: 'Updated description of the event.',
+      time: '1:00 PM - 3:00 PM',
+      location: 'Updated Location',
+    };
+
+    try {
+      const response = await axios.put(`http://127.0.0.1:5000/events/${eventId}`, updatedEvent);
+      setEvents((prevEvents) =>
+        prevEvents.map((event) => (event.id === eventId ? response.data.event : event))
+      );
+    } catch (error) {
+      console.error('Error updating event:', error);
+    }
+  };
+
+  const handleDeleteEvent = async (eventId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:5000/events/${eventId}`);
+      setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));  // Remove event from list
+    } catch (error) {
+      console.error('Error deleting event:', error);
+    }
+  };
 
   return (
     <Container>
       <Typography variant="h4" sx={{ fontWeight: 'bold', marginTop: 3 }}>Upcoming Events</Typography>
-
       <Divider sx={{ margin: '20px 0' }} />
 
-      {events ? (
-        events.map((event, index) => (
-          <Card key={index} sx={{ marginBottom: 2 }}>
-            <CardHeader
-              title={event.title}
-              subheader={event.date}
-              action={<AccordionSummary expandIcon={<ExpandMoreIcon />} />}
-            />
-            <Accordion>
-              <AccordionDetails>
-                <CardContent>
-                  <Typography variant="body1">Time: {event.time}</Typography>
-                  <Typography variant="body1">Location: {event.location}</Typography>
-                  <Typography variant="body2" sx={{ marginTop: 2 }}>
-                    {event.description}
-                  </Typography>
-                </CardContent>
-              </AccordionDetails>
-            </Accordion>
-          </Card>
-        ))
-      ) : (
-        // Skeleton loading state
+      {loading ? (
         <Box>
           {[...Array(4)].map((_, index) => (
             <Card key={index} sx={{ marginBottom: 2 }}>
@@ -91,10 +94,41 @@ const EventsPage = () => {
             </Card>
           ))}
         </Box>
+      ) : (
+        events && events.length > 0 ? (
+          events.map((event, index) => (
+            <Card key={index} sx={{ marginBottom: 2 }}>
+              <CardHeader
+                title={event.title}
+                subheader={event.date}
+                // action={<AccordionSummary expandIcon={<ExpandMoreIcon />} />}
+              />
+              <Accordion>
+                <AccordionDetails>
+                  <CardContent>
+                    <Typography variant="body1">Time: {event.time}</Typography>
+                    <Typography variant="body1">Location: {event.location}</Typography>
+                    <Typography variant="body2" sx={{ marginTop: 2 }}>
+                      {event.description}
+                    </Typography>
+                    {/* <Box sx={{ marginTop: 2 }}>
+                      <Button onClick={() => handleUpdateEvent(event.id)} variant="outlined">Update Event</Button>
+                      <Button onClick={() => handleDeleteEvent(event.id)} variant="outlined" color="error" sx={{ marginLeft: 2 }}>
+                        Delete Event
+                      </Button>
+                    </Box> */}
+                  </CardContent>
+                </AccordionDetails>
+              </Accordion>
+            </Card>
+          ))
+        ) : (
+          <Typography variant="body1" sx={{ marginTop: 3 }}>No events available</Typography>
+        )
       )}
 
       <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
-        <Button
+        {/* <Button
           variant="contained"
           sx={{
             backgroundColor: '#2196F3',
@@ -102,9 +136,10 @@ const EventsPage = () => {
             padding: '10px 20px',
             fontWeight: 'bold',
           }}
+          onClick={handleCreateEvent}
         >
-          View All Events
-        </Button>
+          Add New Event
+        </Button> */}
       </Box>
     </Container>
   );

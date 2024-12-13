@@ -13,6 +13,7 @@ import SchoolCalendar from "./Calender";
 import StudentReport from "./StudentReport";
 import EventsPage from "./StudentEvent";
 import FinancePage from "./Finance";
+import StudentsPage from "./Students";
 
 const StudentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -136,7 +137,7 @@ const StudentDashboard = () => {
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<PiStudent />}
-            onClick={() => handleLinkClick(<SchoolCalendar/>)}
+            onClick={() => handleLinkClick(<StudentsPage/>)}
           >
             Students
           </Button>

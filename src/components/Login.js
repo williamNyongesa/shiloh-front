@@ -6,12 +6,15 @@ import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext.js';
 import { login as userLogin } from '../api.js';
+import { useTheme } from '@mui/material/styles'; // Import the useTheme hook
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
   const { login } = useAuth();
   const baseUrl = process.env.REACT_APP_BASE_URL;  // Correct access to environment variable
+  const theme = useTheme(); // Access the current theme
+  
   console.log('Base URL:', baseUrl);  // Log to ensure it is loaded
 
   const formik = useFormik({
@@ -71,7 +74,12 @@ const Login = () => {
         borderRadius={2}
         boxShadow={3}
       >
-        <Typography variant="h4" align="center" gutterBottom>
+        <Typography 
+          variant="h4" 
+          align="center" 
+          gutterBottom
+          color={theme.palette.primary} // Adjust the color based on the theme
+        >
           Login
         </Typography>
 
@@ -105,6 +113,7 @@ const Login = () => {
           onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
+          color={"secondary"}
         />
         <Button
           fullWidth
