@@ -47,6 +47,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/enrollment" element={<Enrollment />}/>
 
         <Route
           path="/admin"
@@ -69,14 +70,6 @@ function App() {
           element={
             <ProtectedRoute requiredRole="student">
               <StudentRegistration />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/enrollment"
-          element={
-            <ProtectedRoute requiredRole="student">
-              <Enrollment />
             </ProtectedRoute>
           }
         />

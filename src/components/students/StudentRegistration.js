@@ -4,15 +4,16 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { useSnackbar } from "notistack";
 import { AuthContext } from "../context/AuthContext";
-import { Box, Button, Container, TextField, Typography, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import { Box, Button, Container, TextField, Typography, Select, MenuItem, InputLabel, FormControl, useTheme } from "@mui/material";
 
 export const StudentRegistration = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
-    const [loading, setLoading] = useState(false)
-    const baseUrl = process.env.BASE_URL;
+    const [loading, setLoading] = useState(false);
+    const theme = useTheme(); // Access theme for dynamic styling
 
+    const baseUrl = process.env.BASE_URL;
 
     const formik = useFormik({
         initialValues: {
@@ -41,7 +42,6 @@ export const StudentRegistration = () => {
                     },
                     body: JSON.stringify(values),
                 });
-                console.log(values)
 
                 if (response.ok) {
                     const data = await response.json();
@@ -51,10 +51,8 @@ export const StudentRegistration = () => {
                 } else {
                     const errorData = await response.json();
                     enqueueSnackbar(errorData.message || 'Registration failed', { variant: 'error' });
-                    console.log("Response status:", response.status);
                 }
             } catch (error) {
-                console.error("Registration failed:", error.message);
                 enqueueSnackbar('An error occurred. Please try again later.', { variant: 'error' });
             }
             finally {
@@ -70,7 +68,7 @@ export const StudentRegistration = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 minHeight: '100vh',
-                backgroundColor: 'background.default'
+                backgroundColor: theme.palette.background.default, // Theme-based background color
             }}
         >
             <Container maxWidth="sm">
@@ -80,12 +78,12 @@ export const StudentRegistration = () => {
                         flexDirection: 'column',
                         alignItems: 'center',
                         padding: 3,
-                        backgroundColor: 'white',
+                        backgroundColor: theme.palette.background.paper, // Form background adapts to the theme
                         borderRadius: 2,
                         boxShadow: 3,
                     }}
                 >
-                    <Typography variant="h5" sx={{ marginBottom: 3 }}>
+                    <Typography variant="h5" sx={{ marginBottom: 3, color: theme.palette.text.primary }}>
                         Student Registration
                     </Typography>
 
@@ -102,6 +100,13 @@ export const StudentRegistration = () => {
                             error={formik.touched.name && Boolean(formik.errors.name)}
                             helperText={formik.touched.name && formik.errors.name}
                             margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper, // Input background matches form
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary, // Text color
+                                    borderColor: theme.palette.divider, // Border color based on theme
+                                },
+                            }}
                         />
 
                         <TextField
@@ -116,6 +121,13 @@ export const StudentRegistration = () => {
                             error={formik.touched.email && Boolean(formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
                             margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
                         />
 
                         <TextField
@@ -130,10 +142,17 @@ export const StudentRegistration = () => {
                             error={formik.touched.phone_number && Boolean(formik.errors.phone_number)}
                             helperText={formik.touched.phone_number && formik.errors.phone_number}
                             margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
                         />
 
                         <FormControl fullWidth margin="normal">
-                            <InputLabel id="country_name">Country</InputLabel>
+                            <InputLabel id="country_name" sx={{ color: theme.palette.text.primary }}>Country</InputLabel>
                             <Select
                                 labelId="country_name"
                                 id="country_name"
@@ -142,6 +161,11 @@ export const StudentRegistration = () => {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.country_name && Boolean(formik.errors.country_name)}
+                                sx={{
+                                    backgroundColor: theme.palette.background.paper,
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                }}
                             >
                                 <MenuItem value="select">Select Country</MenuItem>
                                 <MenuItem value="Kenya">Kenya</MenuItem>

@@ -14,6 +14,7 @@ import StudentReport from "./StudentReport";
 import EventsPage from "./StudentEvent";
 import FinancePage from "./Finance";
 import StudentsPage from "./Students";
+import AssignmentsPage from "./Assignment";
 
 const StudentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -129,7 +130,7 @@ const StudentDashboard = () => {
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<MdAssignment />}
-            onClick={() => setSelectedSection('assignments')}
+            onClick={() => handleLinkClick(<AssignmentsPage/>)}
           >
             Assignments
           </Button>

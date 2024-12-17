@@ -12,7 +12,7 @@ const EventsPage = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/events');  // Replace with actual API endpoint
+        const response = await axios.get('https://shiloh-server.onrender.com/events');  // Replace with actual API endpoint
         setEvents(response.data);  // Update the state with fetched events
         setLoading(false);  // Set loading to false once data is fetched
       } catch (error) {
@@ -33,7 +33,7 @@ const EventsPage = () => {
     };
 
     try {
-      const response = await axios.post('http://127.0.0.1:5000/events/submit-event', newEvent);
+      const response = await axios.post('https://shiloh-server.onrender.com/events/submit-event', newEvent);
       setEvents((prevEvents) => [...prevEvents, response.data.event]);  // Add new event to the list
     } catch (error) {
       console.error('Error creating event:', error);
@@ -50,7 +50,7 @@ const EventsPage = () => {
     };
 
     try {
-      const response = await axios.put(`http://127.0.0.1:5000/events/${eventId}`, updatedEvent);
+      const response = await axios.put(`https://shiloh-server.onrender.com/events/${eventId}`, updatedEvent);
       setEvents((prevEvents) =>
         prevEvents.map((event) => (event.id === eventId ? response.data.event : event))
       );
@@ -61,7 +61,7 @@ const EventsPage = () => {
 
   const handleDeleteEvent = async (eventId) => {
     try {
-      await axios.delete(`http://127.0.0.1:5000/events/${eventId}`);
+      await axios.delete(`https://shiloh-server.onrender.com/events/${eventId}`);
       setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));  // Remove event from list
     } catch (error) {
       console.error('Error deleting event:', error);

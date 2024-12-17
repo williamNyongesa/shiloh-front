@@ -28,14 +28,14 @@
         confirmPassword: Yup.string()
           .oneOf([Yup.ref('password'), null], 'Passwords must match')
           .required('Required'),
-        role: Yup.string().required('Role is required'),
+        // role: Yup.string().required('Role is required'),
       }),
       onSubmit: async (values) => {
         setLoading(true);
         setErrorMessage(null);
 
         try {
-          const response = await fetch(`https://shiloh-server.onrender.com/users`, {
+          const response = await fetch(`${baseUrl}/users`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -152,7 +152,7 @@
             />
 
             {/* Role Selection Dropdown */}
-            <TextField
+            {/* <TextField
               fullWidth
               select
               label="Role"
@@ -170,7 +170,7 @@
               <MenuItem value="admin">Admin</MenuItem>
               <MenuItem value="student">Student</MenuItem>
               <MenuItem value="teacher">Teacher</MenuItem>
-            </TextField>
+            </TextField> */}
 
             <Button
               type="submit"

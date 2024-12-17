@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, TextField, Button, CircularProgress, Snackbar, Alert } from "@mui/material";
-import "./enrollment.css"; // Ensure that you also apply any custom CSS for additional styling if needed
+import { Box, Typography, TextField, Button, CircularProgress, Snackbar, Alert, useTheme } from "@mui/material";
+import { useDropzone } from 'react-dropzone';
+import "./enrollment.css";
 
 const Enrollment = () => {
+  const theme = useTheme();  // Access the MUI theme
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     studentId: "",
+    email: "",
     phoneNumber: "",
     selectedCourses: [],
+    documents: [],
   });
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar visibility
-  const [snackbarMessage, setSnackbarMessage] = useState(""); // Message to display in Snackbar
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Severity of the Snackbar (success or error)
-  const baseUrl = process.env.BASE_URL;
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-
+  // Fetch courses when the component mounts
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -24,18 +27,18 @@ const Enrollment = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("Fetched courses:", data);
         setCourses(data.courses || []);
-        setLoading(false); // Stop loading after fetching courses
-      } catch (error) {
-        console.error("Error fetching courses:", error);
         setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error("Error fetching courses:", error);
       }
     };
 
     fetchCourses();
   }, []);
 
+  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -44,29 +47,40 @@ const Enrollment = () => {
     }));
   };
 
+  // Handle file selection via Dropzone
+  const onDrop = (acceptedFiles) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      documents: acceptedFiles, // Store the selected files
+    }));
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: '.pdf,.doc,.docx,.jpg,.jpeg,.png',
+    multiple: true,
+  });
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form data submitted:", formData);
+    const formDataToSubmit = new FormData();
+
+    formDataToSubmit.append('phone_number', formData.phoneNumber);
+    formDataToSubmit.append('student_id', formData.studentId);
+    formDataToSubmit.append('email', formData.email || "");
+    formDataToSubmit.append('courses', formData.selectedCourses);
+
+    // Append documents to FormData object
+    formData.documents.forEach((file) => {
+      formDataToSubmit.append('document_file', file);
+    });
 
     try {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-
-      const bodyData = JSON.stringify({
-        phone_number: formData.phoneNumber,
-        courses: formData.selectedCourses,
-        student_id: formData.studentId,
-      });
-
-      const requestOptions = {
+      const response = await fetch(`https://shiloh-server.onrender.com/enrollments`, {
         method: "POST",
-        headers: myHeaders,
-        body: bodyData,
-        redirect: "follow",
-      };
-
-      // Use async/await for the fetch request
-      const response = await fetch(`https://shiloh-server.onrender.com/enrollments`, requestOptions);
+        body: formDataToSubmit,
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -75,11 +89,12 @@ const Enrollment = () => {
       const result = await response.json();
       console.log("Enrollment success:", result);
 
-      // Reset form data after successful enrollment
       setFormData({
         studentId: "",
+        email: "",
         phoneNumber: "",
         selectedCourses: [],
+        documents: [],
       });
 
       setSnackbarSeverity("success");
@@ -93,8 +108,9 @@ const Enrollment = () => {
     }
   };
 
+  // Handle Snackbar close
   const handleCloseSnackbar = () => {
-    setSnackbarOpen(false); // Close the Snackbar
+    setSnackbarOpen(false);
   };
 
   return (
@@ -104,7 +120,7 @@ const Enrollment = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        bgcolor: "background.default",
+        bgcolor: "background.default", // Theme-based background color
         padding: 2,
       }}
     >
@@ -114,7 +130,7 @@ const Enrollment = () => {
         sx={{
           width: "100%",
           maxWidth: 500,
-          bgcolor: "white",
+          bgcolor: "background.paper", // Theme-based paper background
           p: 4,
           borderRadius: 2,
           boxShadow: 3,
@@ -126,18 +142,28 @@ const Enrollment = () => {
 
         <TextField
           fullWidth
-          label="Student ID"
-          name="studentId"
-          value={formData.studentId}
+          label="Phone Number"
+          name="phoneNumber"
+          value={formData.phoneNumber}
           onChange={handleInputChange}
           required
           sx={{ mb: 2 }}
         />
+
         <TextField
           fullWidth
-          label="Phone Number"
-          name="phoneNumber"
-          value={formData.phoneNumber}
+          label="Email (Optional)"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          sx={{ mb: 2 }}
+        />
+
+        <TextField
+          fullWidth
+          label="Student ID"
+          name="studentId"
+          value={formData.studentId}
           onChange={handleInputChange}
           required
           sx={{ mb: 2 }}
@@ -154,10 +180,7 @@ const Enrollment = () => {
           onChange={(e) =>
             setFormData({
               ...formData,
-              selectedCourses: Array.from(
-                e.target.selectedOptions,
-                (option) => option.value
-              ),
+              selectedCourses: Array.from(e.target.selectedOptions, (option) => option.value),
             })
           }
           required
@@ -183,6 +206,32 @@ const Enrollment = () => {
             ))
           )}
         </select>
+
+        {/* File upload section */}
+        <Box
+          sx={{
+            border: `2px dashed ${theme.palette.divider}`, // Use theme-based border color
+            padding: 2,
+            borderRadius: 1,
+            textAlign: "center",
+            mb: 2,
+          }}
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+          <Typography variant="body1">
+            Drag & drop documents here, or click to select files
+          </Typography>
+          {formData.documents.length > 0 && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2">
+                {formData.documents.map((file, index) => (
+                  <Box key={index}>{file.name}</Box>
+                ))}
+              </Typography>
+            </Box>
+          )}
+        </Box>
 
         <Button
           type="submit"

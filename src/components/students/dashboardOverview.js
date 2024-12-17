@@ -66,7 +66,7 @@ const StudentdashboardOverview = () => {
               <Box key={index} sx={{ display: "flex", justifyContent: "space-between", mb: 3, flexDirection: "column" }}>
                 <Box>
                   <Typography variant="body1" sx={{ fontWeight: "bold" }} color="secondary">{course}</Typography>
-                  <Typography variant="body2" sx={{ color: "gray" }}>Progress: {Math.random()*100}%</Typography>
+                  <Typography variant="body2" sx={{ color: "gray" }}>Progress: {Math.floor(Math.random()*100)}%</Typography>
                   <Box sx={{ width: "100%", height: 6, backgroundColor: "#e0e0e0", mt: 1 }}>
                     <Box sx={{ width: `${Math.random()*100}}%`, height: "100%", backgroundColor: "#388e3c" }} />
                   </Box>
