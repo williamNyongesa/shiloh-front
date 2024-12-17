@@ -12,6 +12,7 @@ import LandingPage from './components/Landing';
 import { ProtectedRoute } from './components/context/AuthContext';
 import { ThemeProvider as MuiThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { ThemeProvider, useTheme } from './components/context/ThemeContext';
+import Teacher from './components/teacher';
 
 // require('dotenv').config()
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/enrollment" element={<Enrollment />}/>
+        <Route path="/teacher" element={<Teacher/>}/>
 
         <Route
           path="/admin"
