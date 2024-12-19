@@ -50,7 +50,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/enrollment" element={<Enrollment />}/>
         <Route path="/teacher" element={<Teacher/>}/>
-
+        <Route path="/student/registration" element={<StudentRegistration />} />
         <Route
           path="/admin"
           element={
@@ -64,14 +64,6 @@ function App() {
           element={
             <ProtectedRoute requiredRole="student">
               <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/student/registration"
-          element={
-            <ProtectedRoute requiredRole="student">
-              <StudentRegistration />
             </ProtectedRoute>
           }
         />

@@ -4,9 +4,13 @@ import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIco
 import TransactionList from '../components/admin/TransactionList';
 import Header from '../components/admin/Header';
 import { useNavigate } from 'react-router-dom';
+import Users from "../components/admin/Users";
+import { FaUser } from "react-icons/fa";
 
 const Admin = () => {
   const [open, setOpen] = useState(false);
+  const [currentComponent, setCurrentComponent] = useState(null);
+
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
 
@@ -17,6 +21,9 @@ const Admin = () => {
       navigate('/home');
     }
   }, [user, navigate]);
+  const handleLinkClick = (component) => {
+    setCurrentComponent(component);
+  };
 
   return (
     user.role === 'admin' ? (
@@ -59,8 +66,14 @@ const Admin = () => {
           </Box>
           <Divider sx={{ my: 2 }} />
           <Box>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<DashboardIcon />}>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<DashboardIcon />} onClick={()=>handleLinkClick()}>
               Dashboard
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<Users/>) }>
+              Users
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<TransactionList/>) }>
+              Transactions
             </Button>
             <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<ExitToAppIcon />} onClick={() => { localStorage.removeItem('role'); navigate('/login'); }}>
               Logout
@@ -72,8 +85,8 @@ const Admin = () => {
           <Paper sx={{ padding: 3, boxShadow: 3, marginBottom: 4 }}>
             <Typography variant="h4" align="center">WELCOME TO SHILOH</Typography>
           </Paper>
-          <Header />
-          <TransactionList />
+          {/* <Header /> */}
+          {currentComponent}
         </Box>
       </Box>
     ) : null

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Box, List, ListItem, Typography, Divider, Skeleton } from '@mui/material';
+import { Box, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Divider, Skeleton } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
+import Header from './Header';
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); 
-  const [loading, setLoading] = useState(true);  // State for loading indication
+  const [itemsPerPage] = useState(5);
+  const [loading, setLoading] = useState(true); // State for loading indication
   const baseUrl = process.env.BASE_URL;
 
-  
   const fetchTransactions = async () => {
     try {
       const response = await fetch(`https://shiloh-server.onrender.com/finances`);
@@ -17,8 +17,8 @@ const TransactionList = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setTransactions(data); 
-      setLoading(false); 
+      setTransactions(data);
+      setLoading(false);
       console.log(data);
     } catch (error) {
       console.error('Error fetching transaction data:', error);
@@ -27,11 +27,11 @@ const TransactionList = () => {
   };
 
   useEffect(() => {
-    fetchTransactions(); 
+    fetchTransactions();
   }, []);
 
   const handlePageChange = (event, value) => {
-    setCurrentPage(value); 
+    setCurrentPage(value);
   };
 
   const indexOfLastTransaction = currentPage * itemsPerPage;
@@ -40,64 +40,67 @@ const TransactionList = () => {
 
   return (
     <Box sx={{ backgroundColor: 'white', borderRadius: 2, boxShadow: 3, padding: 4 }}>
+      {/* <Header/> */}
       <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
         Latest Transactions
       </Typography>
       
       {loading ? (
-        <List>
-          {[...Array(5)].map((_, index) => (
-            <ListItem key={index} sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
-              <Box>
-                <Skeleton variant="text" width="150px" />
-              </Box>
-
-              <Box>
-                <Skeleton variant="text" width="80px" />
-              </Box>
-
-              <Box>
-                <Skeleton variant="text" width="120px" />
-              </Box>
-            </ListItem>
-          ))}
-        </List>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell><Skeleton variant="text" width="120px" /></TableCell>
+                <TableCell><Skeleton variant="text" width="80px" /></TableCell>
+                <TableCell><Skeleton variant="text" width="120px" /></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {[...Array(5)].map((_, index) => (
+                <TableRow key={index}>
+                  <TableCell><Skeleton variant="text" width="120px" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="80px" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="120px" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       ) : (
-        <List>
-          {currentTransactions.length === 0 ? (
-            <Typography>No transactions available</Typography>
-          ) : (
-            currentTransactions.map((t) => (
-              <ListItem key={t.id} sx={{ display: 'flex', justifyContent: 'space-between', padding: 2 }}>
-                <Box>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'gray' }}>
-                    {t.transaction_type}
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="body1" color="primary" sx={{ fontWeight: 'bold' }}>
-                    Ksh {t.amount}
-                  </Typography>
-                </Box>
-
-                <Box>
-                  <Typography variant="body2" sx={{ color: 'gray' }}>
-                    {t.date}
-                  </Typography>
-                </Box>
-              </ListItem>
-            ))
-          )}
-        </List>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Transaction Type</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {currentTransactions.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3}>No transactions available</TableCell>
+                </TableRow>
+              ) : (
+                currentTransactions.map((t) => (
+                  <TableRow key={t.id}>
+                    <TableCell>{t.transaction_type}</TableCell>
+                    <TableCell>Ksh {t.amount}</TableCell>
+                    <TableCell>{t.date}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
       
       <Divider sx={{ marginY: 2 }} />
       
       <Pagination
-        count={Math.ceil(transactions.length / itemsPerPage)} 
-        page={currentPage} 
-        onChange={handlePageChange} 
+        count={Math.ceil(transactions.length / itemsPerPage)}
+        page={currentPage}
+        onChange={handlePageChange}
         color="primary"
       />
     </Box>
