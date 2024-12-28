@@ -196,12 +196,12 @@ const StudentsPage = () => {
                 <Typography variant="body2" align="center" color="text.secondary">
                   Email: {student.email}
                 </Typography>
-                <Typography variant="body2" align="center" color="text.secondary">
+                {/* <Typography variant="body2" align="center" color="text.secondary">
                   Role: {student.role}
                 </Typography>
                 <StyledButton variant="contained">
                   View Details
-                </StyledButton>
+                </StyledButton> */}
               </StyledCard>
             </Box>
           ))}

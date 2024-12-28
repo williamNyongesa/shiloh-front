@@ -35,7 +35,9 @@ const Navbar = () => {
     { label: 'Admin', path: '/admin', authRequired: true, roles: ['admin'] },
     { label: 'Student Dashboard', path: '/student', authRequired: true, roles: ['student'] },
     { label: 'Student Registration', path: '/student/registration'},
-    { label: 'Enrollment', path: '/enrollment', authRequired: true, roles: ['student'] }
+    { label: 'Enrollment', path: '/enrollment', authRequired: true, roles: ['student'] },
+    { label: 'Teacher', path: '/teacher', authRequired: true, roles:['teacher'] }
+
   ];
 
   const filteredMenuItems = menuItems.filter(item => {

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Skeleton, Avatar } from "@mui/material";
+import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Skeleton, Avatar, IconButton } from "@mui/material";
 import { MdAssignment, MdEvent } from "react-icons/md";
-import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Payment } from "@mui/icons-material";
+import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Payment, Schedule } from "@mui/icons-material";
 import { CiSettings } from "react-icons/ci";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { SlCalender } from "react-icons/sl";
 import { PiStudent } from "react-icons/pi";
+import { GrMenu } from 'react-icons/gr';
+import MenuOpen from '@mui/icons-material/MenuOpen';
 import StudentdashboardOverview, { renderCourses } from "./dashboardOverview";
 import SettingsPage from "./Settings";
 import QuizzesPage from "./Quizzes";
@@ -15,6 +17,8 @@ import EventsPage from "./StudentEvent";
 import FinancePage from "./Finance";
 import StudentsPage from "./Students";
 import AssignmentsPage from "./Assignment";
+import ScheduleClass, { DisplayDummyData, Timetable } from "./TimeTable";
+import Courses from "./Courses";
 
 const StudentDashboard = () => {
   const [open, setOpen] = useState(false);
@@ -23,7 +27,11 @@ const StudentDashboard = () => {
   const user = JSON.parse(localStorage.getItem('user'))
   const [selectedSection, setSelectedSection] = useState('dashboard'); 
   const [currentComponent, setCurrentComponent] = useState(<StudentdashboardOverview/>);
+  const drawerWidth = 250;
 
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+  };
 
 
   const getInitials = (name) => {
@@ -36,34 +44,41 @@ const StudentDashboard = () => {
     setCurrentComponent(component);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
-
  
   return (
     <Box sx={{ display: "flex", height: "100%" }}>
+      <IconButton
+        onClick={handleDrawerToggle}
+        sx={{
+          position: 'fixed',
+          top: 60,
+          left: open ? drawerWidth + 10 : 5,
+          backgroundColor: '#2E3B55',
+          color: 'pink',
+          zIndex: 6000,
+          borderRadius: '5px',
+        }}
+      >
+        {open ? (<MenuOpen />) : (<GrMenu />)}
+      </IconButton>
 
 <Drawer
         sx={{
           marginTop: 40,
-          width: 250,
+          width: drawerWidth,
           height: "100vh",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             marginTop: 8,
-            width: 250,
+            width: drawerWidth,
             backgroundColor: "#424242",
             color: "white",
             height: "100%",
           },
         }}
-        variant={isSmallScreen ? "temporary" : "permanent"}
         anchor="left"
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={handleDrawerToggle}
         ModalProps={{
           keepMounted: true,
         }}
@@ -114,7 +129,7 @@ const StudentDashboard = () => {
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<MdAssignment />}
-            onClick={ ()=>handleLinkClick(renderCourses)}
+            onClick={ ()=>handleLinkClick(<Courses/>)}
           >
             Courses
           </Button>
@@ -161,6 +176,14 @@ const StudentDashboard = () => {
           <Button
             fullWidth
             sx={{ color: "white", textAlign: "left", padding: 1 }}
+            startIcon={<Schedule/>}
+            onClick={() => handleLinkClick(<Timetable/>)}
+          >
+            Timetable
+          </Button>
+          <Button
+            fullWidth
+            sx={{ color: "white", textAlign: "left", padding: 1 }}
             startIcon={<MdEvent />}
             onClick={() => handleLinkClick(<EventsPage/>)}
           >
@@ -197,7 +220,6 @@ const StudentDashboard = () => {
       <Box sx={{ flexGrow: 1, padding: 4, color: "#fff" }}>
         <Paper sx={{ padding: 3, boxShadow: 3}}>
           <Typography variant="h4" align="center">WELCOME TO SHILOH</Typography>
-          <Typography variant="body2" align="center">register as to start session</Typography>
         </Paper>
         {currentComponent}
       </Box>

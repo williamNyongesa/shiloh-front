@@ -66,7 +66,7 @@ const SettingsPage = () => {
     console.log(values)
 
     try {
-      const response = await axios.put('https://shiloh-server.onrender.com/users', formData, {
+      const response = await axios.put(`http:localhost:5000/users`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json', // Important to specify for file uploads

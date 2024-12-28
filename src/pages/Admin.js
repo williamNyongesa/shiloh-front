@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Avatar } from "@mui/material";
-import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon, Menu as MenuIcon, Grading as GradingIcon } from "@mui/icons-material";
+import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon, Menu as MenuIcon, Grading as GradingIcon, SchoolSharp, MonetizationOnRounded } from "@mui/icons-material";
 import TransactionList from '../components/admin/TransactionList';
 import Header from '../components/admin/Header';
 import { useNavigate } from 'react-router-dom';
 import Users from "../components/admin/Users";
 import { FaUser } from "react-icons/fa";
+import FileUpload from "../components/admin/Alumini";
+import FinanceOverview from "../components/admin/FinanceOverview";
+import SchoolCalendar from "../components/admin/Calender";
 
 const Admin = () => {
   const [open, setOpen] = useState(false);
@@ -18,7 +21,8 @@ const Admin = () => {
 
   useEffect(() => {
     if (user.role !== 'admin') {
-      navigate('/home');
+      localStorage.removeItem('user');
+      navigate('/login');
     }
   }, [user, navigate]);
   const handleLinkClick = (component) => {
@@ -74,6 +78,15 @@ const Admin = () => {
             </Button>
             <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<TransactionList/>) }>
               Transactions
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<SchoolSharp />} onClick={()=> handleLinkClick(<FileUpload/>) }>
+              Alumini
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<MonetizationOnRounded />} onClick={()=> handleLinkClick(<FinanceOverview/>) }>
+              Finance
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<MonetizationOnRounded />} onClick={()=> handleLinkClick(<SchoolCalendar/>) }>
+              Calendar
             </Button>
             <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<ExitToAppIcon />} onClick={() => { localStorage.removeItem('role'); navigate('/login'); }}>
               Logout

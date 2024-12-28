@@ -3,44 +3,50 @@ import { Box, Paper, Typography, Button, Skeleton } from "@mui/material";
 import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon } from "@mui/icons-material";
 import { GrAchievement } from "react-icons/gr";
 import { FaAward } from "react-icons/fa";
-import axios from "axios";
-
-let renderStats = null;
-let renderCourses = null;
-
-// Sample stats for the dashboard
-const stats = [
-  { label: "Courses To Do", count: 29, icon: <DashboardIcon /> },
-  { label: "Overdue Courses", count: 6, icon: <ExitToAppIcon /> },
-  { label: "Completed Courses", count: 1, icon: <StarIcon /> },
-];
 
 const StudentdashboardOverview = () => {
-  const [courses, setCourses] = useState([]);  // State to hold the fetched courses
-  const [loading, setLoading] = useState(true);  // State to manage loading state
-  const baseUrl = process.env.BASE_URL;
+  const [loading, setLoading] = useState(true);
 
+  // Provided Data
+  const data = {
+    country_id: 3,
+    id: 1,
+    grades: [],
+    phone_number: "(398)581-5753",
+    email: "christina05@example.com",
+    invoices: [],
+    user_id: 4,
+    teacher_id: null,
+    enrollments: [
+      {
+        document_file: null,
+        enrollment_date: "2024-08-02 15:16:49",
+        student_id: 1,
+        id: 38,
+        courses: "Linguistics, Psychiatry, Foreign Languages",
+        phone_number: "(398)581-5753",
+      },
+      {
+        document_file: null,
+        enrollment_date: "2024-10-21 07:35:37",
+        student_id: 1,
+        id: 39,
+        courses: "Music Theory",
+        phone_number: "(398)581-5753",
+      },
+    ],
+    student_id: "GB001",
+    name: "Dawn Cox",
+    enrolled_date: "2024-12-08 07:30:59",
+  };
+
+  // Simulate a loading state
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);  // Set loading to true when fetching starts
-        const response = await axios.get("https://shiloh-server.onrender.com/enrollments/courses"); // Replace with your actual API endpoint
-        // Ensure courses is always an array
-        const coursesData = Array.isArray(response.data.courses) ? response.data.courses : [];
-        setCourses(coursesData);  // Update the state with the fetched courses
-        setLoading(false);  // Set loading to false once the data is fetched
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-        setCourses([]);  // Set empty array in case of error
-        setLoading(false);  // Set loading to false after error
-      }
-    };
-
-    fetchCourses();  // Call fetchCourses when the component mounts
-  }, []); 
+    setTimeout(() => setLoading(false), 1000); // Simulate loading delay
+  }, []);
 
   // Render Courses UI
-  renderCourses = () => (
+  const renderCourses = () => (
     <Box sx={{ padding: 3 }}>
       <Paper sx={{ padding: 3, boxShadow: 3 }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", borderBottom: 1, pb: 2, mb: 4 }}>
@@ -48,7 +54,6 @@ const StudentdashboardOverview = () => {
           <Button sx={{ color: "primary.main" }}>View All</Button>
         </Box>
         {loading ? (
-          // Show skeleton loaders if data is loading
           [...Array(3)].map((_, index) => (
             <Box key={index} sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
               <Box>
@@ -60,33 +65,30 @@ const StudentdashboardOverview = () => {
             </Box>
           ))
         ) : (
-          // Render actual courses after loading
-          courses.length > 0 ? (
-            courses.map((course, index) => (
-              <Box key={index} sx={{ display: "flex", justifyContent: "space-between", mb: 3, flexDirection: "column" }}>
-                <Box>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }} color="secondary">{course}</Typography>
-                  <Typography variant="body2" sx={{ color: "gray" }}>Progress: {Math.floor(Math.random()*100)}%</Typography>
-                  <Box sx={{ width: "100%", height: 6, backgroundColor: "#e0e0e0", mt: 1 }}>
-                    <Box sx={{ width: `${Math.random()*100}}%`, height: "100%", backgroundColor: "#388e3c" }} />
-                  </Box>
-                </Box>
-                <Button sx={{ color: "primary.main" }}>Continue</Button>
-              </Box>
-            ))
-          ) : (
-            <Typography variant="body2" sx={{ color: "gray" }}>No courses available</Typography>
-          )
+          data.enrollments.map((enrollment, index) => (
+            <Box key={index} sx={{ mb: 3 }}>
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>{enrollment.courses}</Typography>
+              <Typography variant="body2" sx={{ color: "gray" }}>
+                Enrollment Date: {new Date(enrollment.enrollment_date).toLocaleDateString()}
+              </Typography>
+            </Box>
+          ))
         )}
       </Paper>
     </Box>
   );
 
-  // Render stats UI
-  renderStats = () => (
-    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row", md: "row" } }}>
+  // Render Stats UI
+  const stats = [
+    { label: "Enrollments", count: data.enrollments.length, icon: <DashboardIcon /> },
+    { label: "Completed Courses", count: 0, icon: <StarIcon /> },
+    { label: "Total Invoices", count: data.invoices.length, icon: <ExitToAppIcon /> },
+  ];
+
+  const renderStats = () => (
+    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
       {stats.map((stat, index) => (
-        <Box key={index} sx={{ width: { xs: "100%", sm: "33%" }, padding: 3 }}>
+        <Box key={index} sx={{ width: "33%", padding: 3 }}>
           <Paper sx={{ padding: 3, display: "flex", flexDirection: "column", alignItems: "center", boxShadow: 3 }}>
             {stat.icon}
             <Typography variant="h3" sx={{ fontWeight: "bold" }}>{loading ? <Skeleton width={50} /> : stat.count}</Typography>
@@ -97,49 +99,12 @@ const StudentdashboardOverview = () => {
     </Box>
   );
 
-  // Render rewards and certificates UI
-  const renderRewardAndCertificates = () => (
-    <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
-      {["Reward", "Certificates"].map((item, index) => (
-        <Box key={index} sx={{ width: { xs: "100%", sm: "50%" }, padding: 3 }}>
-          <Paper sx={{ padding: 3, boxShadow: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-              {item === "Reward" ? <GrAchievement sx={{ marginRight: 1 }} /> : <FaAward sx={{ marginRight: 1 }} />}
-              {item}
-            </Typography>
-            <Box sx={{ display: "flex", gap: 1 }}>
-              {[...Array(5)].map((_, i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: "50%",
-                    backgroundColor: loading ? "#e0e0e0" : "#388e3c",
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <StarIcon />
-                </Box>
-              ))}
-            </Box>
-            <Button sx={{ mt: 2 }} color="primary">View All</Button>
-          </Paper>
-        </Box>
-      ))}
-    </Box>
-  );
-
   return (
     <>
       {renderStats()}
-      {renderRewardAndCertificates()}
       {renderCourses()}
     </>
   );
 };
 
-export { renderStats, renderCourses };
 export default StudentdashboardOverview;

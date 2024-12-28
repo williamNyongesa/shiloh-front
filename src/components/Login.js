@@ -28,17 +28,18 @@ const Login = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(`https://shiloh-server.onrender.com/users/login`, values, {
+        const response = await axios.post(`http://localhost:5000/users/login`, values, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
 
         if (response.status === 200) {
-          const { access_token, username, email, role } = response.data;
+          const { access_token, username, email, role, refresh_token } = response.data;
+          localStorage.setItem('userDATA',JSON.stringify(response.data))
 
-          if (access_token && username && email && role) {
-            login(access_token, { username, role, email });
+          if (access_token && username && email && role && refresh_token) {
+            login(access_token, refresh_token, { username, role, email });
             if (role === 'student') navigate('/enrollment');
             if (role === 'admin') navigate('/admin');
           } else {

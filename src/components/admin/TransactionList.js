@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Divider, Skeleton } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, Typography, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Divider, Skeleton, Paper } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import Header from './Header';
+import SearchBar from '../Searchbar';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TransactionList = () => {
   const [transactions, setTransactions] = useState([]);
@@ -9,19 +12,67 @@ const TransactionList = () => {
   const [itemsPerPage] = useState(5);
   const [loading, setLoading] = useState(true); // State for loading indication
   const baseUrl = process.env.BASE_URL;
+  const navigate = useNavigate();
+
+  const refreshToken = async () => {
+    try {
+      const refresh_token = localStorage.getItem('refresh_token');
+      const response = await axios.post('http://localhost:5000/users/refresh', {}, {
+        headers: {
+          Authorization: `Bearer ${refresh_token}`
+        }
+      });
+
+      if (response.status === 200) {
+        const newToken = response.data.access_token;
+        localStorage.setItem('access_token', newToken);
+        localStorage.setItem('refresh_token', response.data.refresh_token);
+        localStorage.setItem('tokenExpiration', JSON.stringify(new Date().getTime() + 60 * 60 * 1000)); // Assuming token is valid for 1 hour
+        return newToken;
+      } else {
+        console.error("Error refreshing token", response.statusText);
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error("Error refreshing token", error);
+      navigate('/login');
+    }
+  };
 
   const fetchTransactions = async () => {
+    setLoading(true);
+    setTransactions([]); // Ensure transactions is an array before fetching
     try {
-      const response = await fetch(`https://shiloh-server.onrender.com/finances`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      let token = localStorage.getItem('access_token');
+      console.log("Token before fetch:", token); // Debugging statement
+
+      const response = await fetch(`http://localhost:5000/finances`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          token = newToken;
+          console.log("New token after refresh:", token); // Debugging statement
+
+          const retryResponse = await fetch(`http://localhost:5000/finances`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const retryData = await retryResponse.json();
+          setTransactions(retryData);
+        }
+      } else {
+        const data = await response.json();
+        setTransactions(data);
       }
-      const data = await response.json();
-      setTransactions(data);
-      setLoading(false);
-      console.log(data);
     } catch (error) {
-      console.error('Error fetching transaction data:', error);
+      console.error("Error fetching data:", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -41,9 +92,7 @@ const TransactionList = () => {
   return (
     <Box sx={{ backgroundColor: 'white', borderRadius: 2, boxShadow: 3, padding: 4 }}>
       {/* <Header/> */}
-      <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-        Latest Transactions
-      </Typography>
+      <SearchBar fetchData={fetchTransactions} placeholder="Search transactions..." dataKey="description" />
       
       {loading ? (
         <TableContainer>

@@ -18,10 +18,11 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (access_token, userData) => {
+    const login = (access_token, refresh_token, userData) => {
         const { username, role, email } = userData; 
 
         localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
         localStorage.setItem('user', JSON.stringify({ username, role, email }));
 
         setToken(access_token);
