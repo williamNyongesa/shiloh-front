@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -11,21 +11,32 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Checkbox,
 } from "@mui/material";
 import axios from "axios";
 
-import {
-  Checkbox,
-} from "@mui/material";
-
 export const MarkAttendance = () => {
-  const [students, setStudents] = useState([
-    // Mock data; replace with actual API response
-    { id: 1, name: "John Doe", course: "Math", status: "" },
-    { id: 2, name: "Jane Smith", course: "Science", status: "" },
-    { id: 3, name: "Bob Johnson", course: "History", status: "" },
-  ]);
+  const [students, setStudents] = useState([]);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    // Fetch students (replace with your actual API endpoint)
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/students"); // Adjust API as needed
+        const studentsData = response.data.map((student) => ({
+          id: student.id,
+          name: student.name,
+          course: student.course,
+          status: "",
+        }));
+        setStudents(studentsData);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+    fetchStudents();
+  }, []);
 
   const handleStatusChange = (id, status) => {
     setStudents((prev) =>
@@ -37,11 +48,13 @@ export const MarkAttendance = () => {
 
   const handleSubmit = async () => {
     try {
-      const attendanceData = students.map(({ id, course, status }) => ({
-        student_id: id,
-        course,
-        status,
-      }));
+      const attendanceData = students
+        .filter(({ status }) => status) // Only include students with a status set
+        .map(({ id, course, status }) => ({
+          student_id: id,
+          course,
+          status,
+        }));
       const response = await axios.post("http://localhost:5000/attendance", {
         attendance: attendanceData,
       });
@@ -100,11 +113,7 @@ export const MarkAttendance = () => {
         </Table>
       </TableContainer>
       <Box mt={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-        >
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
           Submit Attendance
         </Button>
       </Box>
@@ -117,7 +126,6 @@ export const MarkAttendance = () => {
   );
 };
 
-
 export const AttendanceReport = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -125,7 +133,7 @@ export const AttendanceReport = () => {
 
   const handleGenerateReport = async () => {
     try {
-      const response = await axios.get("/attendance/report", {
+      const response = await axios.get("http://localhost:5000/attendance/report", {
         params: { start_date: startDate, end_date: endDate },
       });
       setAttendanceRecords(response.data);
@@ -145,20 +153,16 @@ export const AttendanceReport = () => {
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
+          slotProps={{ input: { shrink: true } }}
         />
         <TextField
           label="End Date"
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          InputLabelProps={{ shrink: true }}
+          slotProps={{ input: { shrink: true } }}
         />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleGenerateReport}
-        >
+        <Button variant="contained" color="primary" onClick={handleGenerateReport}>
           Generate Report
         </Button>
       </Box>

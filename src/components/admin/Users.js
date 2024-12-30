@@ -18,16 +18,18 @@ const Users = () => {
   });
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = localStorage.getItem('access_token');
+  // Retrieve the userData object from localStorage, which contains access token and other user data
+  const userData = JSON.parse(localStorage.getItem('userData')); // userData contains all tokens and user info
+  const token = userData?.access_token;
+  const refreshToken = userData?.refresh_token;
 
   useEffect(() => {
-    if (user?.role !== 'admin') {
+    if (userData?.user?.role !== 'admin') {
       navigate('/home');
     } else {
       fetchUsers();
     }
-  }, [user]);
+  }, [userData]);
 
   const fetchUsers = async () => {
     try {
@@ -91,7 +93,7 @@ const Users = () => {
         }
       });
       if (response.status === 401) {
-        await refreshToken();
+        await refreshTokenHandler();
         const newToken = localStorage.getItem('access_token');
         await fetch(`http://localhost:5000/users/${userId}`, {
           method: 'DELETE',
@@ -111,34 +113,42 @@ const Users = () => {
     const now = new Date().getTime();
 
     if (tokenExpiration && now >= tokenExpiration) {
-      await refreshToken();
+      await refreshTokenHandler();
     }
   };
 
-  const refreshToken = async () => {
+  const refreshTokenHandler = async () => {
     try {
-      const refresh_token = localStorage.getItem('refresh_token');
+      // Use the refresh_token from userData to get a new access token
       const response = await axios.post('http://localhost:5000/users/refresh', {}, {
         headers: {
-          Authorization: `Bearer ${refresh_token}`
+          Authorization: `Bearer ${refreshToken}`
         }
       });
-      localStorage.setItem('access_token', response.data.access_token);
-      localStorage.setItem('refresh_token', response.data.refresh_token);
-      localStorage.setItem('tokenExpiration', JSON.stringify(new Date().getTime() + 60 * 60 * 1000)); // Assuming token is valid for 1 hour
+      // Update the tokens and expiration in localStorage
+      const newAccessToken = response.data.access_token;
+      const newRefreshToken = response.data.refresh_token;
+
+      // Retrieve the existing userData from localStorage
+    const updatedUserData = JSON.parse(localStorage.getItem('userData')) || {};
+
+    // Update only the relevant keys in the userData object, without overwriting other data
+    updatedUserData.access_token = newAccessToken;
+    updatedUserData.refresh_token = newRefreshToken;
+    localStorage.setItem('tokenExpiration', JSON.stringify(new Date().getTime() + 60 * 60 * 1000));
+    // Save the updated userData back to localStorage
+    localStorage.setItem('userData', JSON.stringify(updatedUserData));
     } catch (error) {
       console.error("Error refreshing token", error);
       navigate('/login');
     }
   };
 
-
-
   return (
-    user?.role === 'admin' ? (
+    userData?.user?.role === 'admin' ? (
       <Box sx={{ display: "flex", height: "100%" }}>
         <Box sx={{ flexGrow: 1, padding: 4, color: "#fff" }}>
-        <SearchBar fetchData={fetchUsers} placeholder="Search users..." dataKey="username" />
+          <SearchBar fetchData={fetchUsers} placeholder="Search users..." dataKey="username" />
 
           <Paper sx={{ padding: 3, boxShadow: 3, marginBottom: 4 }}>
             <Typography variant="h6" gutterBottom>Users List</Typography>

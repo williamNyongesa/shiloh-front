@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Box, Typography, Paper, Divider, Button, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Avatar, Drawer, IconButton } from '@mui/material';
-import TeacherDashboardOverview from './teachersDashboardOverview';
+import TeacherDashboardOverview, { TeacherDash } from './teachersDashboardOverview';
 import { Dashboard as DashboardIcon, School as SchoolIcon, Assignment as AssignmentIcon, Star as StarIcon, Notifications as NotificationsIcon, Settings as SettingsIcon, ExitToApp as ExitToAppIcon, Menu, MenuOpen, CheckCircleOutline } from '@mui/icons-material';
 import { FaAward, FaHamburger } from 'react-icons/fa';
 import Quizzes from './Quizess';
@@ -57,7 +57,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 
         <List>
           <ListItem disablePadding>
-            <ListItemButton sx={{ color: 'white' }}>
+            <ListItemButton sx={{ color: 'white' }} onClick={()=>handleLinkClick(<TeacherDash/>)}>
               <ListItemIcon sx={{ color: 'white' }}>
                 <DashboardIcon />
               </ListItemIcon>
@@ -160,7 +160,7 @@ const Sidebar = ({ currentComponent, setCurrentComponent }) => {
 };
 
 const TeacherDashboard = () => {
-  const [currentComponent, setCurrentComponent] = useState(null);
+  const [currentComponent, setCurrentComponent] = useState(<TeacherDash/>);
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidebar currentComponent={currentComponent} setCurrentComponent={setCurrentComponent} />

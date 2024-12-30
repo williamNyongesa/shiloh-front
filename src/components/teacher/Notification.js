@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, TextField, Button, MenuItem, Snackbar, Alert, Box, Paper, Skeleton } from '@mui/material';
-import { Formik, Field, Form } from 'formik';
-import * as Yup from 'yup';
+import { Container, Typography, Snackbar, Alert, Box, Paper, Skeleton } from '@mui/material';
 
 const Notification = () => {
-    const [notificationType, setNotificationType] = useState('');
-    const [recipient, setRecipient] = useState('');
-    const [message, setMessage] = useState('');
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [notifications, setNotifications] = useState([]);
@@ -28,83 +23,9 @@ const Notification = () => {
         fetchNotifications();
     }, []);
 
-    const handleSubmit = async (values, { setSubmitting }) => {
-        try {
-            const response = await fetch('http://localhost:5000/communication/notifications', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
-
-            const result = await response.json();
-            setSnackbarMessage(result.message);
-            setOpenSnackbar(true);
-            if (result.notification) {
-                setNotifications(prevNotifications => [...prevNotifications, result.notification]);
-            }
-        } catch (error) {
-            console.error('Error sending notification:', error);
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
-    const validationSchema = Yup.object().shape({
-        type: Yup.string().required('Notification type is required'),
-        recipient: Yup.string().required('Recipient is required'),
-        message: Yup.string().required('Message is required'),
-    });
 
     return (
-        <Container maxWidth="sm" style={{ marginTop: '2rem' }}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                Send Notification
-            </Typography>
-            <Formik
-                initialValues={{ type: '', recipient: '', message: '' }}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmit}
-            >
-                {({ isSubmitting }) => (
-                    <Form>
-                        <Field
-                            as={TextField}
-                            select
-                            label="Notification Type"
-                            name="type"
-                            fullWidth
-                            margin="normal"
-                            required
-                        >
-                            <MenuItem value="email">Email</MenuItem>
-                            <MenuItem value="sms">SMS</MenuItem>
-                        </Field>
-                        <Field
-                            as={TextField}
-                            label="Recipient"
-                            name="recipient"
-                            fullWidth
-                            margin="normal"
-                            required
-                        />
-                        <Field
-                            as={TextField}
-                            label="Message"
-                            name="message"
-                            fullWidth
-                            margin="normal"
-                            multiline
-                            rows={4}
-                            required
-                        />
-                        <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '1rem' }} disabled={isSubmitting}>
-                            Send
-                        </Button>
-                    </Form>
-                )}
-            </Formik>
+        <Container maxWidth="sm" style={{ marginTop: '2rem' }}>            
             <Box mt={4}>
                 <Typography variant="h5" component="h2" gutterBottom>
                     Notifications

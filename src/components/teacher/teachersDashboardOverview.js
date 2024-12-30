@@ -1,5 +1,8 @@
+import {
+  CircularProgress,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography, Button, Skeleton } from "@mui/material";
+import { Box, Paper, Typography, Button, Skeleton, Divider,Avatar,Grid,Card,List,ListItem,ListItemText, Container } from "@mui/material";
 import { Dashboard as DashboardIcon, Assignment as AssignmentIcon, School as SchoolIcon, Star as StarIcon } from "@mui/icons-material";
 import { GrAchievement } from "react-icons/gr";
 import { FaAward } from "react-icons/fa";
@@ -96,7 +99,7 @@ const TeacherDashboardOverview = () => {
       ))}
     </Box>
   );
-
+  
   // Render rewards and certificates UI for Teachers
   const renderRewardAndCertificates = () => (
     <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
@@ -141,5 +144,183 @@ const TeacherDashboardOverview = () => {
   );
 };
 
-export { renderStats, renderCourses };
-export default TeacherDashboardOverview;
+
+const TeacherDashboard = () => {
+  const [teacher, setTeacher] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Fetch teacher data
+    axios
+    .get("/api/teacher-dashboard")
+    .then((response) => {
+      setTeacher(response.data.teacher);
+      setLoading(false);
+    })
+      .catch((error) => {
+        console.error("Error fetching teacher data:", error);
+        setLoading(false);
+      });
+    }, []);
+    
+    if (loading) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+  
+  if (!teacher) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Typography variant="h6" color="error">
+          Failed to load teacher data.
+        </Typography>
+      </Box>
+    );
+  }
+  
+  return (
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <Avatar sx={{ bgcolor: "primary.main", width: 80, height: 80 }}>
+              <SchoolIcon sx={{ fontSize: 40 }} />
+            </Avatar>
+          </Grid>
+          <Grid item>
+            <Typography variant="h4" fontWeight="bold">
+              {teacher.name}
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary">
+              Subject: {teacher.subject}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Hired on: {new Date(teacher.hire_date).toLocaleDateString()}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Card>
+
+      <Box mt={4}>
+        <Typography variant="h5" gutterBottom>
+          Enrollments
+        </Typography>
+        {teacher.enrollments.length === 0 ? (
+          <Typography variant="body1" color="text.secondary">
+            No enrollments found.
+          </Typography>
+        ) : (
+          <Card sx={{ p: 2, boxShadow: 2 }}>
+            <List>
+              {teacher.enrollments.map((enrollment, index) => (
+                <React.Fragment key={enrollment.id}>
+                  <ListItem>
+                    <ListItemText
+                      primary={`Student: ${enrollment.student_name}`}
+                      secondary={`Enrolled on: ${new Date(enrollment.enrollment_date).toLocaleDateString()}`}
+                    />
+                  </ListItem>
+                  {index < teacher.enrollments.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+          </Card>
+        )}
+      </Box>
+    </Container>
+  );
+};
+
+
+const TeacherDash = () => {
+  const [teacher, setTeacher] = useState(null);
+
+  useEffect(() => {
+    // Fetch teacher data from localStorage
+    const teacherData = localStorage.getItem("userDATA");
+
+    if (teacherData) {
+      try {
+        const parsedData = JSON.parse(teacherData);
+        setTeacher({
+          ...parsedData.teacher,
+          enrollments: parsedData.teacher.enrollments || [],
+        });
+      } catch (error) {
+        console.error("Error parsing teacher data:", error);
+      }
+    }
+  }, []);
+
+  if (!teacher) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Card sx={{ p: 3, boxShadow: 3, borderRadius: 2 }}>
+        <Box display="flex" alignItems="center">
+          <Avatar sx={{ bgcolor: "primary.main", width: 80, height: 80, mr: 2 }}>
+            <SchoolIcon sx={{ fontSize: 40 }} />
+          </Avatar>
+          <Box>
+            <Typography variant="h4" fontWeight="bold">
+              {teacher.name || "No Name"}
+            </Typography>
+            <Typography variant="subtitle1" color="text.secondary">
+              Subject: {teacher.subject || "No Subject"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Hired on:{" "}
+              {teacher.hire_date
+                ? new Date(teacher.hire_date).toLocaleDateString()
+                : "No Hire Date"}
+            </Typography>
+          </Box>
+        </Box>
+      </Card>
+
+      <Box mt={4}>
+        <Typography variant="h5" gutterBottom>
+          Enrollments
+        </Typography>
+        {teacher.enrollments?.length === 0 ? (
+          <Typography variant="body1" color="text.secondary">
+            No enrollments found.
+          </Typography>
+        ) : (
+          <Card sx={{ p: 2, boxShadow: 2 }}>
+            <List>
+              {teacher.enrollments.map((enrollment, index) => (
+                <React.Fragment key={enrollment.id || index}>
+                  <ListItem>
+                    <ListItemText
+                      primary={`Student: ${enrollment.student_name || "Unknown"}`}
+                      secondary={`Enrolled on: ${
+                        enrollment.enrollment_date
+                          ? new Date(enrollment.enrollment_date).toLocaleDateString()
+                          : "Unknown Date"
+                      }`}
+                    />
+                  </ListItem>
+                  {index < teacher.enrollments.length - 1 && <Divider />}
+                </React.Fragment>
+              ))}
+            </List>
+          </Card>
+        )}
+      </Box>
+    </Container>
+  );
+};
+
+export {renderCourses,renderStats,TeacherDash};
+
+export default TeacherDashboard;
