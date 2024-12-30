@@ -1,43 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Typography, Paper, Divider, Card, CardContent, CardHeader, Avatar, Accordion, AccordionSummary, AccordionDetails, Skeleton } from '@mui/material';
+import { Box, Container, Typography, Divider, Accordion, AccordionSummary, AccordionDetails, Skeleton, Badge, Avatar, styled } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip as ChartTooltip } from 'chart.js';
-import { Dashboard as DashboardIcon, School as SchoolIcon, CheckCircle as CheckCircleIcon, AccessAlarm as AccessAlarmIcon } from '@mui/icons-material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 
 // Initialize chart.js plugins
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, ChartTooltip);
 
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""',
+    },
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0,
+    },
+  },
+}));
+
 const StudentReport = () => {
   const [student, setStudent] = useState(null);  // Set to null initially to check loading state
   const [courses, setCourses] = useState(null);  // Set to null initially to check loading state
-  const [upcomingEvents, setUpcomingEvents] = useState(null);  // Set to null initially to check loading state
   const [performanceData, setPerformanceData] = useState(null);  // Set to null initially to check loading state
 
-  // Fetch dummy student data
+  // Fetch data from local storage and set state
   useEffect(() => {
-    // Simulating API call with dummy data
-    setTimeout(() => {
-      setStudent({
-        name: 'John Doe',
-        id: 'S12345',
-        age: 20,
-        enrollmentDate: '2022-08-15',
-        profilePicture: 'https://via.placeholder.com/150',
-      });
+    const userData = JSON.parse(localStorage.getItem('userDATA'));  // Get data stored in localStorage
 
-      setCourses([
-        { title: 'React for Beginners', grade: 'A', status: 'Completed', progress: 100 },
-        { title: 'Advanced JavaScript', grade: 'B+', status: 'In Progress', progress: 70 },
-        { title: 'Data Structures & Algorithms', grade: 'B', status: 'Completed', progress: 85 },
-      ]);
-
-      setUpcomingEvents([
-        { title: 'Final Exam - React', date: '2024-12-20', type: 'Exam' },
-        { title: 'Project Submission - JavaScript', date: '2024-12-15', type: 'Assignment' },
-      ]);
-
-      // Dummy performance data
+    if (userData && userData.student) {  // Ensure student data exists
+      setStudent(userData.student);  // Get the student object from local storage
+      setCourses(userData.student.enrollments);  // Set courses as enrollments from the student data
+      
+      // Dummy performance data (you can update this with actual data if needed)
       setPerformanceData({
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
         datasets: [{
@@ -48,7 +60,7 @@ const StudentReport = () => {
           borderWidth: 1,
         }],
       });
-    }, 2000);  // Simulate a delay of 2 seconds for fetching data
+    }
   }, []);
 
   return (
@@ -57,12 +69,20 @@ const StudentReport = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 3 }}>
         {student ? (
           <>
-            <Avatar alt="Student Profile Picture" src={student.profilePicture} sx={{ width: 100, height: 100 }} />
+            {/* Badge with Avatar */}
+            <StyledBadge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              variant="dot"
+            >
+              <Avatar alt={student.name} src="/static/images/avatar/1.jpg" />
+            </StyledBadge>
             <Box>
               <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{student.name}</Typography>
-              <Typography variant="body1">ID: {student.id}</Typography>
-              <Typography variant="body1">Age: {student.age}</Typography>
-              <Typography variant="body1">Enrolled: {student.enrollmentDate}</Typography>
+              <Typography variant="body1">ID: {student.student_id}</Typography>
+              <Typography variant="body1">Phone: {student.phone_number}</Typography>
+              <Typography variant="body1">Email: {student.email}</Typography>
+              <Typography variant="body1">Enrolled on: {new Date(student.enrolled_date).toLocaleDateString()}</Typography>
             </Box>
           </>
         ) : (
@@ -72,23 +92,26 @@ const StudentReport = () => {
 
       <Divider sx={{ margin: '20px 0' }} />
 
-      {/* Summary Statistics Section */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 3 }}>
-        {[...Array(3)].map((_, index) => (
-          <Box key={index} sx={{ width: '30%' }}>
-            <Card>
-              <CardHeader
-                title={<Skeleton width="60%" />}
-                subheader={<Skeleton width="40%" />}
-                avatar={<Skeleton variant="circular" width={40} height={40} />}
-              />
-              <CardContent>
-                <Skeleton width="60%" />
-              </CardContent>
-            </Card>
-          </Box>
-        ))}
-      </Box>
+      {/* Courses List Section */}
+      <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
+        {courses ? 'Course List' : <Skeleton width="50%" />}
+      </Typography>
+      {courses ? (
+        courses.map((course, index) => (
+          <Accordion key={index}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6">{course.courses}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography variant="body1">Grade: {course.grade || 'Not Available'}</Typography>
+              <Typography variant="body1">Status: {course.status}</Typography>
+              <Typography variant="body1">Progress: {course.progress}%</Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))
+      ) : (
+        <Skeleton variant="rectangular" width="100%" height={100} />
+      )}
 
       <Divider sx={{ margin: '20px 0' }} />
 
@@ -105,44 +128,6 @@ const StudentReport = () => {
       </Box>
 
       <Divider sx={{ margin: '20px 0' }} />
-
-      {/* Courses List Section */}
-      <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-        {courses ? 'Course List' : <Skeleton width="50%" />}
-      </Typography>
-      {courses ? (
-        courses.map((course, index) => (
-          <Accordion key={index}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">{course.title}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography variant="body1">Grade: {course.grade}</Typography>
-              <Typography variant="body1">Status: {course.status}</Typography>
-              <Typography variant="body1">Progress: {course.progress}%</Typography>
-            </AccordionDetails>
-          </Accordion>
-        ))
-      ) : (
-        <Skeleton variant="rectangular" width="100%" height={100} />
-      )}
-
-      <Divider sx={{ margin: '20px 0' }} />
-
-      {/* Upcoming Events Section */}
-      <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-        {upcomingEvents ? 'Upcoming Deadlines' : <Skeleton width="50%" />}
-      </Typography>
-      {upcomingEvents ? (
-        upcomingEvents.map((event, index) => (
-          <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-            <Typography variant="body1">{event.title}</Typography>
-            <Typography variant="body2" sx={{ color: 'gray' }}>{event.date}</Typography>
-          </Box>
-        ))
-      ) : (
-        <Skeleton variant="rectangular" width="100%" height={60} />
-      )}
     </Container>
   );
 };

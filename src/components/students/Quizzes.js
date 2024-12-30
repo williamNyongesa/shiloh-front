@@ -11,6 +11,10 @@ import {
   FormControlLabel,
   Radio,
   Skeleton,
+  Card,
+  CardContent,
+  CardActions,
+  Paper,
 } from "@mui/material";
 
 const QuizzesPage = () => {
@@ -21,14 +25,20 @@ const QuizzesPage = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Fetch quizzes on component mount
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
-        const response = await fetch("https://shiloh-server.onrender.com/quizzes");
+        const token = localStorage.getItem("access_token");
+        const response = await fetch("https://shiloh-server.onrender.com//quizzes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) {
-          throw new Error("Failed to fetch quizzes");
+          throw new Error("Failed to fetch quizess");
         }
         const data = await response.json();
         setQuizzes(data.quizzes || []);
@@ -46,6 +56,7 @@ const QuizzesPage = () => {
     const quiz = quizzes.find((q) => q.id === quizId);
     setSelectedQuiz(quiz);
     setAnswers({}); // Clear previous answers when selecting a new quiz
+    setCurrentQuestionIndex(0); // Reset to the first question
   };
 
   const handleAnswerChange = (questionId, answer) => {
@@ -74,6 +85,14 @@ const QuizzesPage = () => {
     setSnackbarOpen(false);
   };
 
+  const handleNextQuestion = () => {
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+  };
+
+  const handlePreviousQuestion = () => {
+    setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+  };
+
   return (
     <Box
       sx={{
@@ -83,7 +102,7 @@ const QuizzesPage = () => {
         minHeight: "100vh",
         bgcolor: "background.default",
         padding: 2,
-        margin:5
+        margin: 5,
       }}
     >
       <Typography variant="h4" align="center" gutterBottom color="secondary">
@@ -91,7 +110,7 @@ const QuizzesPage = () => {
       </Typography>
 
       {loading ? (
-        <Box sx={{ width: "100%", maxWidth: 600, color:'GrayText' }}>
+        <Box sx={{ width: "100%", maxWidth: 600, color: 'GrayText' }}>
           {/* Skeleton loader for quizzes */}
           <Skeleton variant="text" width="100%" height={50} sx={{ mb: 2 }} />
           <Skeleton variant="rectangular" width="100%" height={60} sx={{ mb: 2 }} />
@@ -107,52 +126,80 @@ const QuizzesPage = () => {
             <Typography>No quizzes available at the moment.</Typography>
           ) : (
             quizzes.map((quiz) => (
-              <Button
-                key={quiz.id}
-                variant="contained"
-                color="primary"
-                onClick={() => handleQuizSelection(quiz.id)}
-                sx={{ mb: 2 }}
-              >
-                {quiz.title}
-              </Button>
+              <Card key={quiz.id} sx={{ mb: 2, width: "100%", maxWidth: 600 }}>
+                <CardContent>
+                  <Typography variant="h6">{quiz.title}</Typography>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleQuizSelection(quiz.id)}
+                    sx={{ ml: 1 }}
+                  >
+                    Start Quiz
+                  </Button>
+                </CardActions>
+              </Card>
             ))
           )}
         </>
       )}
 
-      {selectedQuiz && (
+      {selectedQuiz && selectedQuiz.questions && selectedQuiz.questions.length > 0 && (
         <Box sx={{ width: "100%", maxWidth: 600 }}>
           <Typography variant="h5" align="center" sx={{ mb: 2 }}>
             {selectedQuiz.title}
           </Typography>
 
-          {selectedQuiz.questions.map((question) => (
-            <Box key={question.id} sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                {question.text}
-              </Typography>
-              <FormControl component="fieldset">
-                <RadioGroup
-                  value={answers[question.id] || ""}
-                  onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-                >
-                  {question.options.map((option, index) => (
-                    <FormControlLabel
-                      key={index}
-                      value={option}
-                      control={<Radio />}
-                      label={option}
-                    />
-                  ))}
-                </RadioGroup>
-              </FormControl>
-            </Box>
-          ))}
+          <Paper sx={{ mb: 3, p: 2 }}>
+            <Typography variant="h6" sx={{ mb: 1 }} color="primary">
+              {selectedQuiz.questions[currentQuestionIndex].text}
+            </Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                value={answers[selectedQuiz.questions[currentQuestionIndex].id] || ""}
+                onChange={(e) => handleAnswerChange(selectedQuiz.questions[currentQuestionIndex].id, e.target.value)}
+              >
+                {selectedQuiz.questions[currentQuestionIndex].options.map((option, index) => (
+                  <FormControlLabel
+                    key={index}
+                    value={option}
+                    control={<Radio />}
+                    label={option}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+          </Paper>
 
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Submit Quiz
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handlePreviousQuestion}
+              disabled={currentQuestionIndex === 0}
+            >
+              Previous
+            </Button>
+            {currentQuestionIndex < selectedQuiz.questions.length - 1 ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleNextQuestion}
+              >
+                Next
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+              >
+                Submit Quiz
+              </Button>
+            )}
+          </Box>
         </Box>
       )}
 

@@ -1,0 +1,38 @@
+MVP Features (Delivered in initial phase):
+
+User Management: Role-based access control for administrators, teachers, and students.
+
+Student Information System: Manage student profiles and parent details.
+
+Attendance Tracking: Mark attendance and generate reports.
+
+Gradebook: Track and record student grades.
+
+Graduate Database: The system should generate graduate database
+
+Additional Features (Following MVP):
+
+Fee Management: Invoice generation and payment tracking.
+
+Timetable Scheduling: Class and room scheduling system.
+
+Communication Tools: Email and SMS notifications.
+
+Advanced Reporting: Analytics for attendance,page tracking,  grades, and financials.
+
+4. Technology Stack
+Frontend: React.js with Tailwind CSS for styling.
+
+In App Notifications: Notistack 
+
+Icons: React Icons
+
+Backend: Python Flask.
+
+Database: PostgreSQL .
+
+Notifications: Email/SMS gateway (e.g., SendGrid, Twilio).
+
+Deployment: AWS or Azure cloud infrastructure.
+
+API Documentation - Swagger

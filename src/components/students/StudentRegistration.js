@@ -17,30 +17,43 @@ export const StudentRegistration = () => {
 
     const formik = useFormik({
         initialValues: {
-            name: "",
+            first_name: "",
+            middle_name: "",
+            last_name: "",
             email: "",
             phone_number: "", 
-            country_name: "", 
+            country_name: "",
+            password: "", 
+            confirm_password: "", // New field for password confirmation
         },
         validationSchema: Yup.object({
-            name: Yup.string().required('Student name is required'),
+            first_name: Yup.string().required('First name is required'),
+            last_name: Yup.string().required('Last name is required'),
             email: Yup.string().email('Invalid email address').required('Email is required'),
             phone_number: Yup.string()
                         .matches(/^[0-9]{10,15}$/, 'Phone number must be between 10 and 15 digits')
                         .required('Phone Number is required.'),
             country_name: Yup.string()
                             .notOneOf(["select"], 'Please select a country')
-                            .required('Country is required.')
+                            .required('Country is required.'),
+            password: Yup.string()
+                        .min(6, 'Password must be at least 6 characters')
+                        .required('Password is required'),
+            confirm_password: Yup.string()
+                        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+                        .required('Confirm Password is required'),
         }),
         onSubmit: async (values) => {
             setLoading(true);
             try {
-                const response = await fetch(`https://shiloh-server.onrender.com/students`, {
+                const { confirm_password, ...submissionData } = values; // Remove confirm_password from the data to send
+
+                const response = await fetch(`https://shiloh-server.onrender.com//students`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(values),
+                    body: JSON.stringify(submissionData), // Send the form data excluding the confirm_password
                 });
 
                 if (response.ok) {
@@ -90,21 +103,63 @@ export const StudentRegistration = () => {
                     <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
                         <TextField
                             fullWidth
-                            id="name"
-                            name="name"
-                            label="Name"
+                            id="first_name"
+                            name="first_name"
+                            label="First Name"
                             type="text"
-                            value={formik.values.name}
+                            value={formik.values.first_name}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.name && Boolean(formik.errors.name)}
-                            helperText={formik.touched.name && formik.errors.name}
+                            error={formik.touched.first_name && Boolean(formik.errors.first_name)}
+                            helperText={formik.touched.first_name && formik.errors.first_name}
                             margin="normal"
                             sx={{
                                 backgroundColor: theme.palette.background.paper, // Input background matches form
                                 '& .MuiInputBase-root': {
                                     color: theme.palette.text.primary, // Text color
                                     borderColor: theme.palette.divider, // Border color based on theme
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            id="middle_name"
+                            name="middle_name"
+                            label="Middle Name"
+                            type="text"
+                            value={formik.values.middle_name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.middle_name && Boolean(formik.errors.middle_name)}
+                            helperText={formik.touched.middle_name && formik.errors.middle_name}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            id="last_name"
+                            name="last_name"
+                            label="Last Name"
+                            type="text"
+                            value={formik.values.last_name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.last_name && Boolean(formik.errors.last_name)}
+                            helperText={formik.touched.last_name && formik.errors.last_name}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
                                 },
                             }}
                         />
@@ -184,6 +239,48 @@ export const StudentRegistration = () => {
                                 </Typography>
                             )}
                         </FormControl>
+
+                        <TextField
+                            fullWidth
+                            id="password"
+                            name="password"
+                            label="Password"
+                            type="password"
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            id="confirm_password"
+                            name="confirm_password"
+                            label="Confirm Password"
+                            type="password"
+                            value={formik.values.confirm_password}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.confirm_password && Boolean(formik.errors.confirm_password)}
+                            helperText={formik.touched.confirm_password && formik.errors.confirm_password}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
+                        />
 
                         <Button
                             fullWidth
