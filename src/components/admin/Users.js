@@ -34,7 +34,7 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       await checkTokenExpiration();
-      const response = await axios.get('http://localhost:5000/users', {
+      const response = await axios.get('https://shiloh-server.onrender.com//users', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -56,7 +56,7 @@ const Users = () => {
   const handleCreateUser = async () => {
     try {
       await checkTokenExpiration();
-      await axios.post('http://localhost:5000/users', formData, {
+      await axios.post('https://shiloh-server.onrender.com//users', formData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -71,7 +71,7 @@ const Users = () => {
   const handleEditUser = async () => {
     try {
       await checkTokenExpiration();
-      await axios.put(`http://localhost:5000/users/${selectedUser.id}`, formData, {
+      await axios.put(`https://shiloh-server.onrender.com//users/${selectedUser.id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -86,7 +86,7 @@ const Users = () => {
   const handleDeleteUser = async (userId) => {
     try {
       const updatedToken = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:5000/users/${userId}`, {
+      const response = await fetch(`https://shiloh-server.onrender.com//users/${userId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${updatedToken}`
@@ -95,7 +95,7 @@ const Users = () => {
       if (response.status === 401) {
         await refreshTokenHandler();
         const newToken = localStorage.getItem('access_token');
-        await fetch(`http://localhost:5000/users/${userId}`, {
+        await fetch(`https://shiloh-server.onrender.com//users/${userId}`, {
           method: 'DELETE',
           headers: {
             Authorization: `Bearer ${newToken}`
@@ -120,7 +120,7 @@ const Users = () => {
   const refreshTokenHandler = async () => {
     try {
       // Use the refresh_token from userData to get a new access token
-      const response = await axios.post('http://localhost:5000/users/refresh', {}, {
+      const response = await axios.post('https://shiloh-server.onrender.com//users/refresh', {}, {
         headers: {
           Authorization: `Bearer ${refreshToken}`
         }

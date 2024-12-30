@@ -10,7 +10,7 @@ const Courses = () => {
     const fetchCourses = async () => {
       try {
         setLoading(true); // Set loading to true before fetching
-        const response = await axios.get("http://localhost:5000/enrollments/courses"); // API endpoint
+        const response = await axios.get("https://shiloh-server.onrender.com//enrollments/courses"); // API endpoint
         console.log("API Response:", response.data); // Debug: Log the response
         const coursesData = Array.isArray(response.data.courses) ? response.data.courses : []; // Access the `courses` property
         setCourses(coursesData); // Update courses state

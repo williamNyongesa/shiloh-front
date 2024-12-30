@@ -18,7 +18,7 @@ const Quizzes = () => {
             try {
                 const refreshToken = localStorage.getItem('refresh_token');
                 if (refreshToken) {
-                    const response = await axios.post('http://localhost:5000/users/refresh', { token: refreshToken });
+                    const response = await axios.post('https://shiloh-server.onrender.com//users/refresh', { token: refreshToken });
                     localStorage.setItem('access_token', response.data.access_token);
                     setToken(response.data.access_token);
                 }
@@ -34,7 +34,7 @@ const Quizzes = () => {
     useEffect(() => {
         const fetchQuizzes = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/quizzes', {
+                const response = await axios.get('https://shiloh-server.onrender.com//quizzes', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setQuizzes(response.data.quizzes);
@@ -60,7 +60,7 @@ const Quizzes = () => {
     const refreshToken = async () => {
         try {
             const refresh_token = localStorage.getItem('refresh_token');
-            const response = await axios.post('http://localhost:5000/users/refresh', {}, {
+            const response = await axios.post('https://shiloh-server.onrender.com//users/refresh', {}, {
                 headers: {
                     Authorization: `Bearer ${refresh_token}`
                 }
@@ -129,7 +129,7 @@ const Quizzes = () => {
 
     const createQuiz = async (quiz) => {
         try {
-            const response = await axios.post('http://localhost:5000/quizzes', quiz, {
+            const response = await axios.post('https://shiloh-server.onrender.com//quizzes', quiz, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;
@@ -140,7 +140,7 @@ const Quizzes = () => {
 
     const updateQuiz = async (quiz) => {
         try {
-            const response = await axios.put(`http://localhost:5000/quizzes/${quiz.id}`, quiz, {
+            const response = await axios.put(`https://shiloh-server.onrender.com//quizzes/${quiz.id}`, quiz, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return response.data;

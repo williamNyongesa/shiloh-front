@@ -17,7 +17,7 @@ const TransactionList = () => {
   const refreshToken = async () => {
     try {
       const refresh_token = localStorage.getItem('refresh_token');
-      const response = await axios.post('http://localhost:5000/users/refresh', {}, {
+      const response = await axios.post('https://shiloh-server.onrender.com//users/refresh', {}, {
         headers: {
           Authorization: `Bearer ${refresh_token}`
         }
@@ -46,7 +46,7 @@ const TransactionList = () => {
       let token = localStorage.getItem('access_token');
       console.log("Token before fetch:", token); // Debugging statement
 
-      const response = await fetch(`http://localhost:5000/finances`, {
+      const response = await fetch(`https://shiloh-server.onrender.com//finances`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -58,7 +58,7 @@ const TransactionList = () => {
           token = newToken;
           console.log("New token after refresh:", token); // Debugging statement
 
-          const retryResponse = await fetch(`http://localhost:5000/finances`, {
+          const retryResponse = await fetch(`https://shiloh-server.onrender.com//finances`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }

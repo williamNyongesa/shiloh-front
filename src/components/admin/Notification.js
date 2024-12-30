@@ -15,7 +15,7 @@ const Notification = () => {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await fetch('http://localhost:5000/communication/notifications');
+                const response = await fetch('https://shiloh-server.onrender.com//communication/notifications');
                 const data = await response.json();
                 setNotifications(data);
             } catch (error) {
@@ -30,7 +30,7 @@ const Notification = () => {
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            const response = await fetch('http://localhost:5000/communication/notifications', {
+            const response = await fetch('https://shiloh-server.onrender.com//communication/notifications', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
