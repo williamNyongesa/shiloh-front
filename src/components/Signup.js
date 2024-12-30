@@ -1,208 +1,192 @@
-import React from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { useNavigate } from 'react-router-dom';
+  import React, { useState } from 'react';
+  import { useFormik } from 'formik';
+  import * as Yup from 'yup';
+  import { useNavigate } from 'react-router-dom';
+  import { Button, TextField, CircularProgress, Box, Typography, Paper, MenuItem } from '@mui/material';
 
-const Signup = () => {
-  const navigate = useNavigate();
+  const Signup = () => {
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const navigate = useNavigate();
+    const baseUrl = process.env.BASE_URL;
 
-  const formik = useFormik({
-    initialValues: {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      role: '',
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required('Required'),
-      email: Yup.string().email('Invalid email address').required('Required'),
-      password: Yup.string()
-        .required('Required')
-        .min(8, 'Password must be at least 6 characters'),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
-        .required('Required'),
-      role: Yup.string().required('Role is required'),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(values),
-        });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Network response was not ok');
+    const formik = useFormik({
+      initialValues: {
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: '',
+      },
+      validationSchema: Yup.object({
+        username: Yup.string().required('Required'),
+        email: Yup.string().email('Invalid email address').required('Required'),
+        password: Yup.string()
+          .required('Required')
+          .min(8, 'Password must be at least 8 characters'),
+        confirmPassword: Yup.string()
+          .oneOf([Yup.ref('password'), null], 'Passwords must match')
+          .required('Required'),
+        // role: Yup.string().required('Role is required'),
+      }),
+      onSubmit: async (values) => {
+        setLoading(true);
+        setErrorMessage(null);
+
+        try {
+          const response = await fetch(`${baseUrl}/users`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(values),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            setErrorMessage(errorData.error || 'Network response was not ok');
+            return;
+          }
+
+          const data = await response.json();
+          console.log('Success:', data);
+          navigate('/login');
+        } catch (error) {
+          setErrorMessage('Error: Unable to connect to the server');
+        } finally {
+          setLoading(false);
         }
+      },
+    });
 
-        const data = await response.json();
-        console.log('Success:', data);
-        navigate('/login');
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    },
-  });
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          backgroundColor: '#f0f4f8',
+          padding: 2, 
+        }}
+      >
+        <Paper
+          sx={{
+            padding: 4,
+            width: '100%',
+            maxWidth: 480,
+            borderRadius: 2,
+            boxShadow: 3,
+          }}
+        >
+          <Typography variant="h5" align="center" sx={{ fontWeight: 'bold' }}>
+            Sign Up
+          </Typography>
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-center">Sign Up</h2>
-        <form onSubmit={formik.handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="username"
-              className="block mb-1 text-sm font-medium text-gray-700"
-            >
-              Username
-            </label>
-            <input
+          {errorMessage && (
+            <Box sx={{ mt: 2, color: 'red', textAlign: 'center' }}>
+              <Typography variant="body2">{errorMessage}</Typography>
+            </Box>
+          )}
+
+          <form onSubmit={formik.handleSubmit}>
+            <TextField
+              fullWidth
+              label="Username"
               id="username"
               name="username"
               type="text"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.username && formik.errors.username
-                  ? 'border-red-500'
-                  : 'border-gray-300'
-              }`}
+              variant="outlined"
+              margin="normal"
               value={formik.values.username}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={formik.touched.username && Boolean(formik.errors.username)}
+              helperText={formik.touched.username && formik.errors.username}
             />
-            {formik.touched.username && formik.errors.username && (
-              <div className="mt-1 text-sm text-red-500">
-                {formik.errors.username}
-              </div>
-            )}
-          </div>
 
-          <div>
-            <label
-              htmlFor="email"
-              className="block mb-1 text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
+            <TextField
+              fullWidth
+              label="Email"
               id="email"
               name="email"
               type="email"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.email && formik.errors.email
-                  ? 'border-red-500'
-                  : 'border-gray-300'
-              }`}
+              variant="outlined"
+              margin="normal"
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
             />
-            {formik.touched.email && formik.errors.email && (
-              <div className="mt-1 text-sm text-red-500">
-                {formik.errors.email}
-              </div>
-            )}
-          </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-1 text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
-            <input
+            <TextField
+              fullWidth
+              label="Password"
               id="password"
               name="password"
               type="password"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.password && formik.errors.password
-                  ? 'border-red-500'
-                  : 'border-gray-300'
-              }`}
+              variant="outlined"
+              margin="normal"
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
             />
-            {formik.touched.password && formik.errors.password && (
-              <div className="mt-1 text-sm text-red-500">
-                {formik.errors.password}
-              </div>
-            )}
-          </div>
 
-          <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block mb-1 text-sm font-medium text-gray-700"
-            >
-              Confirm Password
-            </label>
-            <input
+            <TextField
+              fullWidth
+              label="Confirm Password"
               id="confirmPassword"
               name="confirmPassword"
               type="password"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-                  ? 'border-red-500'
-                  : 'border-gray-300'
-              }`}
+              variant="outlined"
+              margin="normal"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
+              helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
             />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-              <div className="mt-1 text-sm text-red-500">
-                {formik.errors.confirmPassword}
-              </div>
-            )}
-          </div>
 
-          <div>
-            <label
-              htmlFor="role"
-              className="block mb-1 text-sm font-medium text-gray-700"
-            >
-              Role
-            </label>
-            <select
+            {/* Role Selection Dropdown */}
+            {/* <TextField
+              fullWidth
+              select
+              label="Role"
               id="role"
               name="role"
-              className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                formik.touched.role && formik.errors.role
-                  ? 'border-red-500'
-                  : 'border-gray-300'
-              }`}
+              variant="outlined"
+              margin="normal"
               value={formik.values.role}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              error={formik.touched.role && Boolean(formik.errors.role)}
+              helperText={formik.touched.role && formik.errors.role}
             >
-              <option value="">Select a role</option>
-              <option value="admin">Admin</option>
-              <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
-            </select>
-            {formik.touched.role && formik.errors.role && (
-              <div className="mt-1 text-sm text-red-500">
-                {formik.errors.role}
-              </div>
-            )}
-          </div>
+              <MenuItem value="">Select a role</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+              <MenuItem value="student">Student</MenuItem>
+              <MenuItem value="teacher">Teacher</MenuItem>
+            </TextField> */}
 
-          <button
-            type="submit"
-            className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Sign Up
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3 }}
+              disabled={loading}
+              startIcon={loading && <CircularProgress size={20} color="inherit" />}
+            >
+              {loading ? 'Signing Up...' : 'Sign Up'}
+            </Button>
+          </form>
+        </Paper>
+      </Box>
+    );
+  };
 
-export default Signup;
+  export default Signup;

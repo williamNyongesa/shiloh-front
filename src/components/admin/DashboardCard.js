@@ -1,15 +1,28 @@
+import React from "react";
+import { Card, CardContent, Box, Typography } from "@mui/material";
+
+const icons = {
+  attach_money: "AttachMoney",
+  money_off: "MoneyOff",
+  account_balance_wallet: "AccountBalanceWalletIcon",
+};
 
 const DashboardCard = ({ title, value, color, icon }) => {
   return (
-    <div className={`flex items-center justify-between p-6 rounded-lg shadow ${color}`}>
-      <div className="flex flex-col items-center">
-        <h2 className="text-white font-semibold text-xl">{value}</h2>
-        <p className="bg-white text-center px-2">{title}</p>
-      </div>
-      <div className="text-white text-4xl">
-        <span className="material-icons">{icon}</span>
-      </div>
-    </div>
+    <Card sx={{ display: 'flex', justifyContent: 'space-between', padding: 3, borderRadius: 2, boxShadow: 3, backgroundColor: `${color}.main` }}>
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="h5" sx={{ color: 'white', fontWeight: 'bold' }}>
+          {value}
+        </Typography>
+        <Typography variant="body2" sx={{ backgroundColor: 'white', color: 'black', paddingX: 2, textAlign: 'center', borderRadius: 1 }}>
+          {title}
+        </Typography>
+      </CardContent>
+      
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontSize: 40 }}>
+        <span className="material-icons">{icons[icon]}</span>
+      </Box>
+    </Card>
   );
 };
 

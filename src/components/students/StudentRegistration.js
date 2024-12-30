@@ -4,19 +4,23 @@ import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { useSnackbar } from "notistack";
 import { AuthContext } from "../context/AuthContext";
+import { Box, Button, Container, TextField, Typography, Select, MenuItem, InputLabel, FormControl, useTheme } from "@mui/material";
 
 export const StudentRegistration = () => {
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const theme = useTheme(); // Access theme for dynamic styling
+
+    const baseUrl = process.env.BASE_URL;
 
     const formik = useFormik({
         initialValues: {
             name: "",
             email: "",
-            phone_number: "", // Ensure this matches the name attribute
-            country_name: "", // Ensure this matches the name attribute
+            phone_number: "", 
+            country_name: "", 
         },
         validationSchema: Yup.object({
             name: Yup.string().required('Student name is required'),
@@ -31,7 +35,7 @@ export const StudentRegistration = () => {
         onSubmit: async (values) => {
             setLoading(true);
             try {
-                const response = await fetch("http://127.0.0.1:5000/students", {
+                const response = await fetch(`https://shiloh-server.onrender.com/students`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -47,10 +51,8 @@ export const StudentRegistration = () => {
                 } else {
                     const errorData = await response.json();
                     enqueueSnackbar(errorData.message || 'Registration failed', { variant: 'error' });
-                    console.log("Response status:", response.status); // Log response status for further investigation
                 }
             } catch (error) {
-                console.error("Registration failed:", error.message);
                 enqueueSnackbar('An error occurred. Please try again later.', { variant: 'error' });
             }
             finally {
@@ -60,140 +62,142 @@ export const StudentRegistration = () => {
     });
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <form 
-                onSubmit={formik.handleSubmit} 
-                className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md"
-            >
-                <h2 className="text-2xl font-bold text-center text-gray-800">Student Registration</h2>
-
-                <div>
-                    <label
-                        htmlFor="name"
-                        className="block mb-1 text-sm font-medium text-gray-700"
-                    >
-                        Name
-                    </label>
-                    <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                            formik.touched.name && formik.errors.name
-                            ? 'border-red-500'
-                            : 'border-gray-300'
-                        }`}
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.name && formik.errors.name && (
-                        <div className="mt-1 text-sm text-red-500">
-                            {formik.errors.name}
-                        </div>
-                    )}
-                </div>
-
-                <div>
-                    <label
-                        htmlFor="email"
-                        className="block mb-1 text-sm font-medium text-gray-700"
-                    >
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                            formik.touched.email && formik.errors.email
-                            ? 'border-red-500'
-                            : 'border-gray-300'
-                        }`}
-                        value={formik.values.email}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.email && formik.errors.email && (
-                        <div className="mt-1 text-sm text-red-500">
-                            {formik.errors.email}
-                        </div>
-                    )}
-                </div>
-
-                <div>
-                    <label
-                        htmlFor="phone_number"
-                        className="block mb-1 text-sm font-medium text-gray-700"
-                    >
-                        Phone Number:
-                    </label>
-                    <input
-                        id="phone_number"
-                        type="text"
-                        name="phone_number" 
-                        className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                            formik.touched.phone_number && formik.errors.phone_number
-                            ? 'border-red-500'
-                            : 'border-gray-300'
-                        }`}
-                        value={formik.values.phone_number}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}    
-                    />
-                    {formik.touched.phone_number && formik.errors.phone_number && (
-                        <div className="mt-1 text-sm text-red-500">
-                            {formik.errors.phone_number}
-                        </div>
-                    )}   
-                </div>
-
-                <div>
-                    <label
-                        htmlFor="country_name"
-                        className="block mb-1 text-sm font-medium text-gray-700"
-                    >
-                        Country:
-                    </label>
-                    <select
-                        id="country_name"
-                        name="country_name"
-                        value={formik.values.country_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${
-                            formik.touched.country_name && formik.errors.country_name
-                            ? 'border-red-500'
-                            : 'border-gray-300'
-                        }`}
-                    >
-                        <option value="select">Select Country</option>
-                        <option value="Kenya">Kenya</option>
-                        <option value="United States">USA</option>
-                        <option value="India">India</option>
-                        <option value="Canada">Canada</option>
-                        <option value="United Kingdom">UK</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Germany">Germany</option>
-                        <option value="France">France</option>
-                        <option value="South Africa">South Africa</option>
-                    </select>
-                    {formik.touched.country_name && formik.errors.country_name && (
-                        <div className="mt-1 text-sm text-red-500">
-                            {formik.errors.country_name}
-                        </div>
-                    )}
-                </div>
-                <button 
-                    type="submit" 
-                    className={`w-full px-4 py-2 text-white bg-blue-500 rounded-md ${
-                        loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-                    }`}
-                    disabled={loading}
+        <Box 
+            sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '100vh',
+                backgroundColor: theme.palette.background.default, // Theme-based background color
+            }}
+        >
+            <Container maxWidth="sm">
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: 3,
+                        backgroundColor: theme.palette.background.paper, // Form background adapts to the theme
+                        borderRadius: 2,
+                        boxShadow: 3,
+                    }}
                 >
-                    {loading ? 'Registering...' : 'Register'}
-                </button>
-            </form>
-        </div>
+                    <Typography variant="h5" sx={{ marginBottom: 3, color: theme.palette.text.primary }}>
+                        Student Registration
+                    </Typography>
+
+                    <form onSubmit={formik.handleSubmit} style={{ width: '100%' }}>
+                        <TextField
+                            fullWidth
+                            id="name"
+                            name="name"
+                            label="Name"
+                            type="text"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.name && Boolean(formik.errors.name)}
+                            helperText={formik.touched.name && formik.errors.name}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper, // Input background matches form
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary, // Text color
+                                    borderColor: theme.palette.divider, // Border color based on theme
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            id="email"
+                            name="email"
+                            label="Email"
+                            type="email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.email && Boolean(formik.errors.email)}
+                            helperText={formik.touched.email && formik.errors.email}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
+                        />
+
+                        <TextField
+                            fullWidth
+                            id="phone_number"
+                            name="phone_number"
+                            label="Phone Number"
+                            type="text"
+                            value={formik.values.phone_number}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.phone_number && Boolean(formik.errors.phone_number)}
+                            helperText={formik.touched.phone_number && formik.errors.phone_number}
+                            margin="normal"
+                            sx={{
+                                backgroundColor: theme.palette.background.paper,
+                                '& .MuiInputBase-root': {
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                },
+                            }}
+                        />
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="country_name" sx={{ color: theme.palette.text.primary }}>Country</InputLabel>
+                            <Select
+                                labelId="country_name"
+                                id="country_name"
+                                name="country_name"
+                                value={formik.values.country_name}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.country_name && Boolean(formik.errors.country_name)}
+                                sx={{
+                                    backgroundColor: theme.palette.background.paper,
+                                    color: theme.palette.text.primary,
+                                    borderColor: theme.palette.divider,
+                                }}
+                            >
+                                <MenuItem value="select">Select Country</MenuItem>
+                                <MenuItem value="Kenya">Kenya</MenuItem>
+                                <MenuItem value="United States">USA</MenuItem>
+                                <MenuItem value="India">India</MenuItem>
+                                <MenuItem value="Canada">Canada</MenuItem>
+                                <MenuItem value="United Kingdom">UK</MenuItem>
+                                <MenuItem value="Australia">Australia</MenuItem>
+                                <MenuItem value="Germany">Germany</MenuItem>
+                                <MenuItem value="France">France</MenuItem>
+                                <MenuItem value="South Africa">South Africa</MenuItem>
+                            </Select>
+                            {formik.touched.country_name && formik.errors.country_name && (
+                                <Typography color="error" variant="body2" sx={{ marginTop: 1 }}>
+                                    {formik.errors.country_name}
+                                </Typography>
+                            )}
+                        </FormControl>
+
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            sx={{ marginTop: 2 }}
+                            disabled={loading}
+                        >
+                            {loading ? 'Registering...' : 'Register'}
+                        </Button>
+                    </form>
+                </Box>
+            </Container>
+        </Box>
     );
 };

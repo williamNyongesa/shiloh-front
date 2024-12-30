@@ -9,16 +9,6 @@ body {
   padding: 0;
 }
 
-/* Main container for the form */
-div {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 /* Title */
 h1 {
   text-align: center;

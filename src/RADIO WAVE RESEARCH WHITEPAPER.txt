@@ -1,0 +1,99 @@
+RADIO WAVE RESEARCH WHITEPAPER
+In this study i'm reseaching on how radio wave work and how one can create and transmitt.
+
+CAPTURING PACKETS WITH ROUTERS
+This section i'll first give AI a simple prompt. The AI i'm prompting is chatgpt 4o mini.
+Here is my prompt "CAN ONE INSTALL SDR IN A ROUTER".
+Here is the response to my question.
+Yes, it is possible to install and use Software-Defined Radio (SDR) on a router, but it comes with certain limitations and requirements. Here's an overview:
+
+### 1. **Router Hardware Limitations:**
+   - **Processing Power:** SDR requires significant computational resources for signal processing, which most consumer routers are not designed to handle. Routers typically have limited CPU power and memory, which may not be sufficient for intensive SDR tasks.
+   - **Wireless Interface:** Many SDR applications are designed to work with specialized hardware like a USB SDR device (e.g., RTL-SDR or HackRF). Routers usually do not have built-in SDR capabilities, so an external SDR device would be needed for signal reception and transmission.
+
+### 2. **Installing SDR on a Router:**
+   If the router has the necessary hardware (e.g., USB ports for connecting an SDR device) and sufficient processing power, you could potentially run SDR software on the router by installing custom firmware (e.g., OpenWRT, DD-WRT, or similar Linux-based router firmware). Here's how that might work:
+   
+   - **Custom Firmware:** Install a custom firmware like **OpenWRT**, which provides a more flexible, Linux-based environment. This would allow you to run SDR software on the router.
+   - **External SDR Device:** You would need to connect an external SDR device (such as an RTL-SDR USB dongle) to the router via its USB port.
+   - **SDR Software:** Install SDR software on the router. Popular options for SDR include:
+     - **GNU Radio:** A free and open-source toolkit that provides signal processing blocks to implement software radios.
+     - **SDRSharp (SDR#):** A popular SDR application, but it is more commonly used on PCs.
+     - **RTL_433**: This is a tool specifically for receiving signals from devices like weather stations and sensors, compatible with RTL-SDR devices.
+
+### 3. **Use Cases:**
+   - **Wireless Monitoring:** Some advanced users set up SDR systems to monitor wireless signals like FM radio, weather data, or even amateur radio frequencies using an SDR device connected to the router.
+   - **Networking:** It’s possible to use SDR on routers for advanced use cases like testing or developing custom wireless protocols.
+
+### 4. **Practical Considerations:**
+   - **Router Capabilities:** Many routers are not powerful enough to handle complex SDR tasks, and it might be more efficient to use a dedicated PC or single-board computer (like a Raspberry Pi) for SDR tasks, with the router simply acting as a network access point.
+   - **Software Dependencies:** SDR software may require specific dependencies that might not be easily installed or supported by router firmware.
+   - **Network Speed & Latency:** SDR applications often require real-time processing, and using a router as the platform could introduce delays, especially if the router is not designed for high-bandwidth applications.
+
+### Summary:
+While installing SDR on a router is possible, it is more practical to use a dedicated device like a Raspberry Pi or PC for SDR tasks, with the router providing network connectivity. If you're determined to proceed with installing SDR on a router, ensure that the router has enough power, an appropriate USB interface for connecting an SDR device, and that you are using a flexible firmware like OpenWRT to facilitate the installation of the necessary software.
+
+Now i need to buy a raspberry pi for my journey on radio wave test.
+
+A new thought emerged on the range of the frequency.
+Then i prompted "radio wave frequency table".
+
+Here is a general table of radio wave frequencies, which divides the electromagnetic spectrum into different bands. This table includes common frequency ranges for various types of radio waves:
+
+| **Radio Wave Band**      | **Frequency Range**     | **Wavelength Range**   | **Common Uses**                                  |
+|--------------------------|-------------------------|------------------------|--------------------------------------------------|
+| **Extremely Low Frequency (ELF)** | 3 Hz - 30 Hz              | > 100,000 km           | Submarine communication, geological surveys      |
+| **Super Low Frequency (SLF)**    | 30 Hz - 300 Hz           | 1,000 km - 100,000 km  | Submarine communication, long-distance signals  |
+| **Ultra Low Frequency (ULF)**    | 300 Hz - 3 kHz           | 100 km - 1,000 km      | Submarine communication, scientific research    |
+| **Very Low Frequency (VLF)**     | 3 kHz - 30 kHz           | 10 km - 100 km         | Navigation, time signals, submarine communication |
+| **Low Frequency (LF)**           | 30 kHz - 300 kHz         | 1 km - 10 km           | AM radio broadcasting, navigation, time signals |
+| **Medium Frequency (MF)**        | 300 kHz - 3 MHz          | 100 m - 1 km           | AM radio broadcasting, maritime communication   |
+| **High Frequency (HF)**          | 3 MHz - 30 MHz           | 10 m - 100 m           | Shortwave radio, aviation communication, CB radio |
+| **Very High Frequency (VHF)**    | 30 MHz - 300 MHz         | 1 m - 10 m             | FM radio, television, two-way radio, marine communication |
+| **Ultra High Frequency (UHF)**   | 300 MHz - 3 GHz          | 10 cm - 1 m            | Television, GPS, cellular networks, radar        |
+| **Super High Frequency (SHF)**   | 3 GHz - 30 GHz           | 1 cm - 10 cm           | Satellite communication, radar, microwave links |
+| **Extremely High Frequency (EHF)**| 30 GHz - 300 GHz         | 1 mm - 1 cm            | Advanced radar, satellite communication, research |
+| **Terahertz (THz)**              | 0.3 THz - 3 THz          | 100 µm - 1 mm          | Imaging, spectroscopy, research                   |
+
+### Key Points:
+- **Longer wavelengths** (like those in ELF, VLF, and LF) are used for deep penetration of the Earth or large distances, such as submarine communications and navigation.
+- **Higher frequencies** (such as VHF, UHF, and SHF) are typically used for broadcasting, wireless communication, and radar.
+- **Very high frequencies (EHF and THz)** are used for advanced scientific research, deep space communication, and specialized technologies like satellite communications.
+
+Different frequency ranges are important for various applications depending on the distance, type of signal, and technology being used. For example, radio waves in the HF range are widely used for international shortwave radio broadcasts, while UHF is used for mobile phones and Wi-Fi.
+
+Now here is a new approach to the AI prompting and a good rabbit hole. Should i STOP to buy the raspberry pi? since my router isn't compatible!
+I started to narrow down:
+				"now i need radio wave frequency for consumers like communication of cell phones, radio transmission, car keys, radio station and others..."
+Here’s a table of radio wave frequencies commonly used for consumer applications like cell phones, radio transmission, car keys, and radio stations. These frequencies are typically within the **Very High Frequency (VHF)**, **Ultra High Frequency (UHF)**, and **Super High Frequency (SHF)** bands:
+
+| **Application**                 | **Frequency Range**         | **Band**               | **Common Uses**                                                                 |
+|----------------------------------|-----------------------------|------------------------|--------------------------------------------------------------------------------|
+| **FM Radio (Commercial)**        | 88 MHz - 108 MHz            | VHF                    | Broadcasting music, talk radio, and other audio content to the public.         |
+| **AM Radio**                     | 530 kHz - 1700 kHz          | MF (Medium Frequency)   | Broadcasting news, music, and talk shows.                                      |
+| **Television (Analog)**          | 54 MHz - 88 MHz (VHF)       | VHF                    | Broadcasting television signals (analog).                                      |
+| **Television (Digital)**         | 470 MHz - 806 MHz           | UHF/VHF                 | Broadcasting digital television signals.                                       |
+| **Cellular Phones (2G, 3G, 4G, 5G)** | 800 MHz - 2.5 GHz         | UHF, SHF                | Voice calls, text messaging, mobile data, and internet access.                 |
+| **Wi-Fi (Wireless Internet)**    | 2.4 GHz - 5 GHz             | UHF, SHF                | Local wireless networking, internet access in homes, offices, and public spaces.|
+| **Bluetooth**                    | 2.4 GHz - 2.485 GHz         | UHF                    | Short-range wireless communication for devices like headsets, speakers, and keyboards. |
+| **GPS (Global Positioning System)**| 1.575 GHz (L1)             | SHF                    | Satellite navigation and positioning.                                           |
+| **Car Keys (Keyless Entry)**     | 315 MHz, 433 MHz, 868 MHz   | UHF                    | Unlocking/locking vehicle doors, starting engines, and remote keyless entry.   |
+| **Garage Door Openers**          | 300 MHz - 400 MHz           | UHF                    | Opening and closing garage doors using remote controls.                        |
+| **Radio Frequency Identification (RFID)** | 125 kHz, 13.56 MHz, 433 MHz, 860 MHz - 960 MHz | LF, HF, UHF | Tagging items for tracking, access control, payment systems.                    |
+| **Cordless Phones**              | 1.8 GHz - 2.4 GHz           | UHF                    | Wireless home phone communication.                                             |
+| **Microwave Ovens**              | 2.45 GHz                    | SHF                    | Cooking food using microwave radiation.                                         |
+| **Satellite TV**                 | 12 GHz - 18 GHz (Ku-band)   | SHF                    | Broadcasting television signals via satellite.                                  |
+| **Two-way Radios (Walkie Talkies)** | 462 MHz - 467 MHz (FRS)   | UHF                    | Short-range communication for outdoor and emergency uses.                      |
+| **Citizen's Band (CB) Radio**    | 26.965 MHz - 27.405 MHz     | HF                     | Short-distance communication, commonly used in vehicles and by truckers.        |
+
+### Summary of Key Ranges:
+- **FM Radio** operates in the **VHF band** (88 MHz - 108 MHz).
+- **AM Radio** operates in the **MF (Medium Frequency)** band (530 kHz - 1700 kHz).
+- **TV Broadcast** (both analog and digital) uses **VHF** (54 MHz - 88 MHz) and **UHF** (470 MHz - 806 MHz).
+- **Cell phones** use the **UHF** and **SHF** bands, from 800 MHz up to 2.5 GHz, with 5G networks using frequencies even higher.
+- **Wi-Fi** and **Bluetooth** use the **UHF** and **SHF** bands, primarily around 2.4 GHz and 5 GHz.
+- **GPS** operates in the **SHF** band (around 1.575 GHz for L1 signals).
+- **Car key fobs** generally use **UHF** (315 MHz, 433 MHz, 868 MHz).
+- **RFID** systems use a wide range, from **LF** (125 kHz) to **UHF** (860 MHz - 960 MHz).
+
+These frequency ranges help facilitate various forms of communication and automation in everyday consumer technology.

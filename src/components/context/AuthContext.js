@@ -1,33 +1,61 @@
-import { createContext, useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 
-// Create AuthContext
 export const AuthContext = createContext();
 
-// Provider component to wrap around App
 export const AuthProvider = ({ children }) => {
-    // Initialize auth state (you might want to check localStorage or session here)
-    const [auth, setAuth] = useState(null);
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
+
+    useEffect(() => {
+        const savedToken = localStorage.getItem('access_token');
+        const savedUser = localStorage.getItem('user');
+
+        if (savedToken && savedUser) {
+            const decodedUser = JSON.parse(savedUser); 
+            setToken(savedToken);
+            setUser(decodedUser);
+        }
+    }, []);
+
+    const login = (access_token, userData) => {
+        const { username, role, email } = userData; 
+
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('user', JSON.stringify({ username, role, email }));
+
+        setToken(access_token);
+        setUser({ username, role });  
+    };
+
+    const logout = () => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+
+        setToken(null);
+        setUser(null);
+    };
+
+    const isAuthenticated = () => !!token;
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth }}>
+        <AuthContext.Provider value={{
+            user, token, login, logout, isAuthenticated
+        }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
-// Custom hook for easy access to auth context
 export const useAuth = () => {
     return useContext(AuthContext);
 };
 
-// ProtectedRoute component to handle route access based on role
-export const ProtectedRoute = ({ children, role }) => {
-    const { auth } = useAuth();
-
-    // If no user is logged in or their role does not match, redirect to login
-    if (!auth?.user || auth.role !== role) {
+export const ProtectedRoute = ({ children, requiredRole }) => {
+    const { user, isAuthenticated } = useAuth();
+    
+    if (!isAuthenticated() || (requiredRole && user?.role !== requiredRole)) {
         return <Navigate to="/login" />;
     }
     return children;
-};
+}
