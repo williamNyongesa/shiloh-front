@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Avatar } from "@mui/material";
-import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon, Menu as MenuIcon, Grading as GradingIcon } from "@mui/icons-material";
+import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon, Menu as MenuIcon, Grading as GradingIcon, SchoolSharp, MonetizationOnRounded, Notifications } from "@mui/icons-material";
 import TransactionList from '../components/admin/TransactionList';
 import Header from '../components/admin/Header';
 import { useNavigate } from 'react-router-dom';
+import Users from "../components/admin/Users";
+import { FaUser } from "react-icons/fa";
+import FileUpload from "../components/admin/Alumini";
+import FinanceOverview from "../components/admin/FinanceOverview";
+import SchoolCalendar from "../components/admin/Calender";
+import Notification from "../components/admin/Notification";
+import Dashboard from "../components/admin/Overview";
 
 const Admin = () => {
   const [open, setOpen] = useState(false);
+  const [currentComponent, setCurrentComponent] = useState(null);
+
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
 
@@ -14,9 +23,13 @@ const Admin = () => {
 
   useEffect(() => {
     if (user.role !== 'admin') {
-      navigate('/home');
+      localStorage.removeItem('user');
+      navigate('/login');
     }
   }, [user, navigate]);
+  const handleLinkClick = (component) => {
+    setCurrentComponent(component);
+  };
 
   return (
     user.role === 'admin' ? (
@@ -59,8 +72,26 @@ const Admin = () => {
           </Box>
           <Divider sx={{ my: 2 }} />
           <Box>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<DashboardIcon />}>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<DashboardIcon />} onClick={()=>handleLinkClick(<Dashboard/>)}>
               Dashboard
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<Users/>) }>
+              Users
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<TransactionList/>) }>
+              Transactions
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<SchoolSharp />} onClick={()=> handleLinkClick(<FileUpload/>) }>
+              Alumini
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<MonetizationOnRounded />} onClick={()=> handleLinkClick(<FinanceOverview/>) }>
+              Finance
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<MonetizationOnRounded />} onClick={()=> handleLinkClick(<SchoolCalendar/>) }>
+              Calendar
+            </Button>
+            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<Notifications />} onClick={()=> handleLinkClick(<Notification/>) }>
+              Notification
             </Button>
             <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<ExitToAppIcon />} onClick={() => { localStorage.removeItem('role'); navigate('/login'); }}>
               Logout
@@ -72,8 +103,8 @@ const Admin = () => {
           <Paper sx={{ padding: 3, boxShadow: 3, marginBottom: 4 }}>
             <Typography variant="h4" align="center">WELCOME TO SHILOH</Typography>
           </Paper>
-          <Header />
-          <TransactionList />
+          {/* <Header /> */}
+          {currentComponent}
         </Box>
       </Box>
     ) : null
