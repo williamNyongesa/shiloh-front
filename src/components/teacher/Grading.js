@@ -13,7 +13,7 @@ const Grading = () => {
 
     const fetchGrades = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/grades');
+            const response = await axios.get('https://shiloh-server.onrender.com//grades');
             setGrades(response.data);
         } catch (error) {
             console.error('Error fetching grades:', error);
@@ -40,10 +40,10 @@ const Grading = () => {
         onSubmit: async (values) => {
             try {
                 if (gradeId) {
-                    const response = await axios.put(`http://localhost:5000/grades/${gradeId}`, values);
+                    const response = await axios.put(`https://shiloh-server.onrender.com//grades/${gradeId}`, values);
                     console.log('Grade updated:', response.data);
                 } else {
-                    const response = await axios.post('http://localhost:5000/grades', values);
+                    const response = await axios.post('https://shiloh-server.onrender.com//grades', values);
                     console.log('Grade created:', response.data);
                 }
                 fetchGrades();
@@ -55,7 +55,7 @@ const Grading = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/grades/${id}`);
+            await axios.delete(`https://shiloh-server.onrender.com//grades/${id}`);
             fetchGrades();
         } catch (error) {
             console.error('Error deleting grade:', error);

@@ -7,7 +7,7 @@ import axios from "axios";
 const userData = JSON.parse(localStorage.getItem("userData"));
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000", // Replace with your API base URL
+  baseURL: "https://shiloh-server.onrender.com/", // Replace with your API base URL
   headers: {
     Authorization: `Bearer ${userData?.access_token}`,
   },
@@ -19,7 +19,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       try {
         // Refresh token
-        const refreshResponse = await axios.post("http://localhost:5000/users/refresh", {
+        const refreshResponse = await axios.post("https://shiloh-server.onrender.com//users/refresh", {
           refresh_token: userData.refresh_token,
         });
 

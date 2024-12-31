@@ -23,7 +23,7 @@ export const MarkAttendance = () => {
     // Fetch students (replace with your actual API endpoint)
     const fetchStudents = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/students"); // Adjust API as needed
+        const response = await axios.get("https://shiloh-server.onrender.com//students"); // Adjust API as needed
         const studentsData = response.data.map((student) => ({
           id: student.id,
           name: student.name,
@@ -55,7 +55,7 @@ export const MarkAttendance = () => {
           course,
           status,
         }));
-      const response = await axios.post("http://localhost:5000/attendance", {
+      const response = await axios.post("https://shiloh-server.onrender.com//attendance", {
         attendance: attendanceData,
       });
       setMessage(response.data.message || "Attendance marked successfully.");
@@ -133,7 +133,7 @@ export const AttendanceReport = () => {
 
   const handleGenerateReport = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/attendance/report", {
+      const response = await axios.get("https://shiloh-server.onrender.com//attendance/report", {
         params: { start_date: startDate, end_date: endDate },
       });
       setAttendanceRecords(response.data);
