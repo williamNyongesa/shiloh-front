@@ -12,12 +12,18 @@ import {
   TableRow,
   Paper,
   Typography,
-  CircularProgress
+  CircularProgress,
+  Snackbar,
+  Alert
 } from '@mui/material';
 
 const FileUpload = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  
 
   // Formik form initialization
   const formik = useFormik({
@@ -35,13 +41,17 @@ const FileUpload = () => {
       formData.append('file', values.file);
 
       try {
-        const response = await axios.post('https://shiloh-server.onrender.com//upload', formData, {
+        const response = await axios.post('https://shiloh-server-2t51.onrender.com/users/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
         setData(response.data);  // Set the table data
         setLoading(false);
+        setSnackbarSeverity("success");
+        setSnackbarMessage("File upload successfully!");
+        setSnackbarOpen(true);
+        
       } catch (error) {
         console.error('Error uploading file:', error);
         alert('Error uploading file');
@@ -49,6 +59,9 @@ const FileUpload = () => {
       }
     },
   });
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   // React Dropzone setup for file drop
   const { getRootProps, getInputProps } = useDropzone({
@@ -100,6 +113,20 @@ const FileUpload = () => {
           </Table>
         </TableContainer>
       )}
+    <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+          >
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity={snackbarSeverity}
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
     </div>
   );
 };

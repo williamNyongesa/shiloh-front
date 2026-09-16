@@ -2,33 +2,37 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Alert } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert, CircularProgress, Divider, Stack } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from './context/AuthContext.js';
-import { login as userLogin } from '../api.js';
-import { useTheme } from '@mui/material/styles'; // Import the useTheme hook
+import { getDemoUser } from '../demoData';
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);  // State for loading
   const navigate = useNavigate();
   const { login } = useAuth();
-  const baseUrl = process.env.REACT_APP_BASE_URL;  // Correct access to environment variable
-  const theme = useTheme(); // Access the current theme
-  
-  console.log('Base URL:', baseUrl);  // Log to ensure it is loaded
 
+  const handleDemoLogin = (role) => {
+    const demoUser = getDemoUser(role);
+    localStorage.setItem('userDATA', JSON.stringify(demoUser));
+    login(demoUser.access_token, demoUser.refresh_token, demoUser);
+    navigate(`/${role}`);
+  };
+  
   const formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: '',
     },
     validationSchema: Yup.object({
-      username: Yup.string().required('Username is required'),
+      email: Yup.string().required('Username is required'),
       password: Yup.string().required('Password is required'),
     }),
     onSubmit: async (values) => {
+      setLoading(true);  // Set loading to true when submitting
       try {
-        const response = await axios.post(`https://shiloh-server.onrender.com//users/login`, values, {
+        const response = await axios.post(`https://shiloh-server-2t51.onrender.com/users/login`, values, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -36,12 +40,13 @@ const Login = () => {
 
         if (response.status === 200) {
           const { access_token, username, email, role, refresh_token } = response.data;
-          localStorage.setItem('userDATA',JSON.stringify(response.data))
+          localStorage.setItem('userDATA', JSON.stringify(response.data))
 
           if (access_token && username && email && role && refresh_token) {
             login(access_token, refresh_token, { username, role, email });
             if (role === 'student') navigate('/enrollment');
             if (role === 'admin') navigate('/admin');
+            if (role === 'user') navigate('/home');
           } else {
             setErrorMessage('Invalid login data received.');
           }
@@ -53,33 +58,24 @@ const Login = () => {
 
         setErrorMessage(errorMsg);
         console.error('Login failed:', errorMsg);
+      } finally {
+        setLoading(false);  // Set loading to false once the request is finished
       }
     },
   });
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      bgcolor="background.default"
-    >
+    <Box className="auth-page">
       <Box
         component="form"
         onSubmit={formik.handleSubmit}
-        width="100%"
-        maxWidth="400px"
-        bgcolor="white"
-        p={4}
-        borderRadius={2}
-        boxShadow={3}
+        className="auth-card"
       >
+        <Typography className="eyebrow">WELCOME BACK</Typography>
         <Typography 
           variant="h4" 
-          align="center" 
           gutterBottom
-          color={theme.palette.primary} // Adjust the color based on the theme
+          color="primary"
         >
           Login
         </Typography>
@@ -92,15 +88,16 @@ const Login = () => {
 
         <TextField
           fullWidth
-          label="Username"
-          name="username"
+          label="Email"
+          name="email"
           variant="outlined"
           margin="normal"
-          value={formik.values.username}
+          value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+          color="secondary"
         />
         <TextField
           fullWidth
@@ -114,7 +111,7 @@ const Login = () => {
           onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
-          color={"secondary"}
+          color="secondary"
         />
         <Button
           fullWidth
@@ -122,9 +119,23 @@ const Login = () => {
           color="primary"
           type="submit"
           sx={{ mt: 2 }}
+          disabled={loading}
         >
-          Login
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'Login'
+          )}
         </Button>
+        <Divider sx={{ my: 3 }}>or</Divider>
+        <Stack spacing={1.25}>
+          <Button fullWidth variant="outlined" color="secondary" type="button" onClick={() => handleDemoLogin('student')}>Try student demo</Button>
+          <Button fullWidth variant="outlined" color="primary" type="button" onClick={() => handleDemoLogin('teacher')}>Try teacher demo</Button>
+          <Button fullWidth variant="outlined" type="button" onClick={() => handleDemoLogin('admin')}>Try admin demo</Button>
+        </Stack>
+        <Typography variant="caption" color="text.secondary" display="block" textAlign="center" sx={{ mt: 1.5 }}>
+          Uses sample data locally. No account or API request required.
+        </Typography>
       </Box>
     </Box>
   );

@@ -1,110 +1,33 @@
 import React from 'react';
-import { Box, Button, Typography, Container, Card, CardContent } from '@mui/material';
-import { School as SchoolIcon, Book as BookIcon, People as PeopleIcon } from '@mui/icons-material';
+import { ArrowForward, AutoStories, CheckCircle, Groups, PlayArrow, School } from '@mui/icons-material';
+import { Box, Button, Chip, Container, Stack, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
+import '../App.css';
 
-const LandingPage = () => {
-  return (
-    <Box sx={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#3f51b5',
-          color: 'white',
-          height: '60vh',
-          textAlign: 'center',
-          padding: 3,
-        }}
-      >
-        <Box>
-          <Typography variant="h2" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
-            Welcome to Our School
-          </Typography>
-          <Typography variant="h5" sx={{ marginBottom: 3 }}>
-            Empowering Students to Succeed and Excel
-          </Typography>
-          <Button variant="contained" color="secondary" size="large" href="/register">
-            Get Started
-          </Button>
-        </Box>
-      </Box>
-
-      <Container sx={{ paddingTop: 4 }}>
-        <Typography variant="h4" align="center" sx={{ fontWeight: 'bold', marginBottom: 4 }}>
-          Our Features
-        </Typography>
-
-        <Box sx={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 4 }}>
-          <Card sx={{ boxShadow: 3, textAlign: 'center', width: 300 }}>
-            <CardContent>
-              <SchoolIcon sx={{ fontSize: 50, color: '#3f51b5' }} />
-              <Typography variant="h5" sx={{ marginTop: 2, fontWeight: 'bold' }}>
-                Quality Education
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'gray', marginTop: 2 }}>
-                Our experienced teachers provide quality education that prepares students for the future.
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <Card sx={{ boxShadow: 3, textAlign: 'center', width: 300 }}>
-            <CardContent>
-              <BookIcon sx={{ fontSize: 50, color: '#3f51b5' }} />
-              <Typography variant="h5" sx={{ marginTop: 2, fontWeight: 'bold' }}>
-                Extensive Library
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'gray', marginTop: 2 }}>
-                Access a vast collection of books and resources to enhance learning and knowledge.
-              </Typography>
-            </CardContent>
-          </Card>
-
-          <Card sx={{ boxShadow: 3, textAlign: 'center', width: 300 }}>
-            <CardContent>
-              <PeopleIcon sx={{ fontSize: 50, color: '#3f51b5' }} />
-              <Typography variant="h5" sx={{ marginTop: 2, fontWeight: 'bold' }}>
-                Community & Support
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'gray', marginTop: 2 }}>
-                Join a community of learners and gain access to support systems to thrive academically.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      </Container>
-
-      <Box
-        sx={{
-          backgroundColor: '#3f51b5',
-          color: 'white',
-          padding: 6,
-          textAlign: 'center',
-          marginTop: 6,
-        }}
-      >
-        <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 3 }}>
-          Ready to Start Your Journey with Us?
-        </Typography>
-        <Button variant="contained" color="secondary" size="large" href="/register">
-          Join Now
-        </Button>
-      </Box>
-
-      <Box
-        sx={{
-          backgroundColor: '#2c3e50',
-          color: 'white',
-          padding: 3,
-          textAlign: 'center',
-        }}
-      >
-        <Typography variant="body2">
-          &copy; {new Date().getFullYear()} Our School. All rights reserved.
-        </Typography>
-      </Box>
-    </Box>
-  );
-};
+const LandingPage = () => (
+	<Box className="landing-page">
+		<section className="landing-hero">
+			<Container className="landing-hero-inner">
+				<Box className="landing-copy">
+					<Chip label="SHILOH COLLEGE · LEARN WITH PURPOSE" className="landing-chip" />
+					<Typography variant="h1">A learning space made for becoming.</Typography>
+					<Typography className="landing-lede">Build useful skills, find your people, and make steady progress with learning that feels personal from day one.</Typography>
+					<Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 4 }}>
+						<Button component={Link} to="/signup" variant="contained" color="secondary" size="large" endIcon={<ArrowForward />}>Create your account</Button>
+						<Button component={Link} to="/login" variant="outlined" size="large" startIcon={<PlayArrow />} className="landing-outline-button">Sign in</Button>
+					</Stack>
+					<Box className="landing-proof"><CheckCircle /><Typography variant="body2">Clear next steps</Typography><CheckCircle /><Typography variant="body2">Supportive community</Typography></Box>
+				</Box>
+				<Box className="landing-visual" aria-label="Shiloh learning journey preview">
+					<Box className="landing-sun" />
+					  <Box className="landing-path-card"><Typography variant="overline">YOUR LEARNING PATH</Typography><Typography variant="h5">Curiosity to confidence</Typography><Box className="landing-path-line"><span className="landing-node active"><School /></span><span /><span className="landing-node"><AutoStories /></span><span /><span className="landing-node"><Groups /></span></Box><Typography variant="body2" color="text.secondary">Start with one meaningful step today.</Typography></Box>
+					<Box className="landing-note"><Typography variant="h6">Small wins matter.</Typography><Typography variant="body2">Your momentum is built one lesson at a time.</Typography></Box>
+				</Box>
+			</Container>
+		</section>
+		<section className="landing-beliefs"><Container><Box className="landing-section-heading"><Typography className="eyebrow">WHY SHILOH</Typography><Typography variant="h2">Education that moves with you.</Typography></Box><Box className="landing-belief-grid"><Box><AutoStories /><Typography variant="h6">Learn clearly</Typography><Typography color="text.secondary">Focused resources and simple paths help you spend more time learning.</Typography></Box><Box><School /><Typography variant="h6">Grow confidently</Typography><Typography color="text.secondary">Build practical knowledge with guidance from teachers who care.</Typography></Box><Box><Groups /><Typography variant="h6">Belong deeply</Typography><Typography color="text.secondary">Connect with a community that makes progress feel less lonely.</Typography></Box></Box></Container></section>
+		<section className="landing-cta"><Container><Typography variant="h2">Ready to begin?</Typography><Typography>There is a place for your next idea here.</Typography><Button component={Link} to="/signup" variant="contained" color="secondary" endIcon={<ArrowForward />} sx={{ mt: 3 }}>Join Shiloh College</Button></Container></section>
+	</Box>
+);
 
 export default LandingPage;

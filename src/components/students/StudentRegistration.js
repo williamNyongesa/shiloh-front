@@ -1,19 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 import { useSnackbar } from "notistack";
-import { AuthContext } from "../context/AuthContext";
 import { Box, Button, Container, TextField, Typography, Select, MenuItem, InputLabel, FormControl, useTheme } from "@mui/material";
 
 export const StudentRegistration = () => {
-    const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
     const [loading, setLoading] = useState(false);
     const theme = useTheme(); // Access theme for dynamic styling
-
-    const baseUrl = process.env.BASE_URL;
 
     const formik = useFormik({
         initialValues: {
@@ -48,19 +44,18 @@ export const StudentRegistration = () => {
             try {
                 const { confirm_password, ...submissionData } = values; // Remove confirm_password from the data to send
 
-                const response = await fetch(`https://shiloh-server.onrender.com//students`, {
+                const response = await fetch(`https://shiloh-server-2t51.onrender.com/students`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(submissionData), // Send the form data excluding the confirm_password
                 });
+                console.log(response);
 
                 if (response.ok) {
-                    const data = await response.json();
-                    setAuth({ user: data, role: "student" });
                     enqueueSnackbar('Registration successful!', { variant: 'success' });
-                    navigate("/enrollment");
+                    navigate("/login");
                 } else {
                     const errorData = await response.json();
                     enqueueSnackbar(errorData.message || 'Registration failed', { variant: 'error' });

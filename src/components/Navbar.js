@@ -29,37 +29,33 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  const menuItems = [
-    { label: 'Home', path: '/home' },
-    { label: 'Sign Up', path: '/signup', authRequired: false },
-    { label: 'Admin', path: '/admin', authRequired: true, roles: ['admin'] },
-    { label: 'Student Dashboard', path: '/student', authRequired: true, roles: ['student'] },
-    { label: 'Student Registration', path: '/student/registration'},
-    { label: 'Enrollment', path: '/enrollment', authRequired: true, roles: ['student'] },
-    { label: 'Teacher', path: '/teacher', authRequired: true, roles:['teacher'] }
-
+  const publicMenuItems = [
+    { label: 'Explore', path: '/' },
+    { label: 'Sign up', path: '/signup' },
   ];
+  const roleMenuItems = {
+    student: [
+      { label: 'About learning', path: '/home' },
+      { label: 'Dashboard', path: '/student' },
+      { label: 'Enrollment', path: '/enrollment' },
+    ],
+    teacher: [{ label: 'Dashboard', path: '/teacher' }],
+    admin: [{ label: 'Dashboard', path: '/admin' }],
+  };
+  const filteredMenuItems = isAuthenticated() ? (roleMenuItems[user?.role] || []) : publicMenuItems;
 
-  const filteredMenuItems = menuItems.filter(item => {
-    if (!item.authRequired) return true;
-
-    if (isAuthenticated() && item.roles && item.roles.includes(user?.role)) {
-      return true;
-    }
-    return false;
-  }).filter(item => !(isAuthenticated() && item.label === 'Sign Up'));
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: '#1976d2', zIndex: 1333, width: '100%', display: 'flex' }}>
-      <Toolbar sx={{ padding: '0 20px' }}>
+    <AppBar position="sticky" elevation={0} sx={{ backgroundColor: 'background.paper', color: 'text.primary', borderBottom: '1px solid', borderColor: 'divider', zIndex: 1333, width: '100%', display: 'flex' }}>
+      <Toolbar sx={{ padding: '0 clamp(16px, 4vw, 40px)', minHeight: 68 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, color: '#fff' }}>
-          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 600 }}>
-            Shiloh College
+          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 800, letterSpacing: '-.4px', color: "Highlight"}}>
+            Shiloh <Box component="span" sx={{ color: 'primary.main' }}>College</Box>
           </Typography>
         </Box>
 
         <IconButton
-          sx={{ display: { xs: 'block', md: 'none' }, color: '#fff' }}
+          sx={{ display: { xs: 'block', md: 'none' }, color: 'text.primary' }}
           edge="end"
           onClick={handleDrawerToggle}
         >
@@ -73,9 +69,9 @@ const Navbar = () => {
               component={Link}
               to={item.path}
               sx={{
-                color: '#fff',
+                color: 'text.secondary',
                 '&:hover': {
-                  backgroundColor: '#115293',
+                  backgroundColor: 'action.hover',
                   borderRadius: '4px',
                 },
                 fontWeight: '500',
@@ -89,10 +85,10 @@ const Navbar = () => {
             <Button
               onClick={handleLogout}
               sx={{
-                color: '#fff',
+                color: 'text.secondary',
                 fontWeight: '500',
                 '&:hover': {
-                  backgroundColor: '#115293',
+                  backgroundColor: 'action.hover',
                   borderRadius: '4px',
                 },
               }}
@@ -103,10 +99,10 @@ const Navbar = () => {
             <Button
               onClick={handleLogin}
               sx={{
-                color: '#fff',
+                color: 'text.secondary',
                 fontWeight: '500',
                 '&:hover': {
-                  backgroundColor: '#115293',
+                  backgroundColor: 'action.hover',
                   borderRadius: '4px',
                 },
               }}

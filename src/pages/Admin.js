@@ -1,113 +1,201 @@
 import React, { useState, useEffect } from "react";
-import { Box, Drawer, Paper, Typography, Button, Divider, useMediaQuery, Avatar } from "@mui/material";
-import { Dashboard as DashboardIcon, ExitToApp as ExitToAppIcon, Star as StarIcon, Menu as MenuIcon, Grading as GradingIcon, SchoolSharp, MonetizationOnRounded, Notifications } from "@mui/icons-material";
-import TransactionList from '../components/admin/TransactionList';
-import Header from '../components/admin/Header';
-import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Drawer,
+  Typography,
+  Button,
+  Divider,
+  useMediaQuery,
+  Avatar,
+} from "@mui/material";
+import {
+  Dashboard as DashboardIcon,
+  ExitToApp as ExitToAppIcon,
+  School as SchoolIcon,
+  MonetizationOn as MonetizationOnIcon,
+  Notifications as NotificationsIcon,
+  VerifiedUser,
+  Book,
+  Person,
+} from "@mui/icons-material";
+import TransactionList from "../components/admin/TransactionList";
+import Header from "../components/admin/Header";
+import { useNavigate } from "react-router-dom";
 import Users from "../components/admin/Users";
-import { FaUser } from "react-icons/fa";
 import FileUpload from "../components/admin/Alumini";
 import FinanceOverview from "../components/admin/FinanceOverview";
 import SchoolCalendar from "../components/admin/Calender";
 import Notification from "../components/admin/Notification";
 import Dashboard from "../components/admin/Overview";
+import Books from "../components/admin/Books";
+import Profile from "../components/admin/Profile";
+import Messages from "../components/admin/Messages";
 
 const Admin = () => {
-  const [open, setOpen] = useState(false);
-  const [currentComponent, setCurrentComponent] = useState(null);
-
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentComponent, setCurrentComponent] = useState(<Dashboard />);
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    if (user.role !== 'admin') {
-      localStorage.removeItem('user');
-      navigate('/login');
+    if (!user || user.role !== "admin") {
+      localStorage.removeItem("user");
+      navigate("/login");
     }
   }, [user, navigate]);
+
   const handleLinkClick = (component) => {
     setCurrentComponent(component);
+    if (isSmallScreen) {
+      setDrawerOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
-    user.role === 'admin' ? (
+    user?.role === "admin" && (
       <Box sx={{ display: "flex", height: "100%" }}>
+        {/* Drawer */}
         <Drawer
           sx={{
-            marginTop: 40,
             width: 250,
-            height: "100vh",
             flexShrink: 0,
             "& .MuiDrawer-paper": {
-              marginTop: 8,
               width: 250,
               backgroundColor: "#424242",
               color: "white",
-              height: "100%",
+              height: "100vh",
+              paddingTop: 8
             },
           }}
           variant={isSmallScreen ? "temporary" : "permanent"}
           anchor="left"
-          open={open}
-          onClose={() => setOpen(false)}
-          ModalProps={{
-            keepMounted: true,
-          }}
+          open={isSmallScreen ? drawerOpen : true}
+          onClose={() => setDrawerOpen(false)}
         >
-          <Box sx={{ padding: 4 }}>
+          <Box sx={{ padding: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Avatar
-                src={user.avatar || "https://via.placeholder.com/50"}
+                src={user?.avatar || "https://via.placeholder.com/50"}
                 alt="Profile"
                 sx={{ width: 50, height: 50 }}
               />
               <Box>
                 <Typography variant="body2">Welcome</Typography>
                 <Typography variant="h6">{user.username}</Typography>
-                <Typography variant="body2" sx={{ color: "gray" }}>Admin</Typography>  {/* Role Display */}
+                <Typography variant="body2" sx={{ color: "gray" }}>
+                  Admin
+                </Typography>
               </Box>
             </Box>
           </Box>
           <Divider sx={{ my: 2 }} />
           <Box>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<DashboardIcon />} onClick={()=>handleLinkClick(<Dashboard/>)}>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<DashboardIcon />}
+              onClick={() => handleLinkClick(<Dashboard />)}
+            >
               Dashboard
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<Users/>) }>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<VerifiedUser />}
+              onClick={() => handleLinkClick(<Users />)}
+            >
               Users
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<FaUser />} onClick={()=> handleLinkClick(<TransactionList/>) }>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<MonetizationOnIcon />}
+              onClick={() => handleLinkClick(<TransactionList />)}
+            >
               Transactions
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<SchoolSharp />} onClick={()=> handleLinkClick(<FileUpload/>) }>
-              Alumini
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<SchoolIcon />}
+              onClick={() => handleLinkClick(<FileUpload />)}
+            >
+              Alumni
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<MonetizationOnRounded />} onClick={()=> handleLinkClick(<FinanceOverview/>) }>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<MonetizationOnIcon />}
+              onClick={() => handleLinkClick(<FinanceOverview />)}
+            >
               Finance
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<MonetizationOnRounded />} onClick={()=> handleLinkClick(<SchoolCalendar/>) }>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<SchoolIcon />}
+              onClick={() => handleLinkClick(<SchoolCalendar />)}
+            >
               Calendar
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<Notifications />} onClick={()=> handleLinkClick(<Notification/>) }>
-              Notification
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<NotificationsIcon />}
+              onClick={() => handleLinkClick(<Notification />)}
+            >
+              Notifications
             </Button>
-            <Button fullWidth sx={{ color: "white", textAlign: "left", padding: 1 }} startIcon={<ExitToAppIcon />} onClick={() => { localStorage.removeItem('role'); navigate('/login'); }}>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<Book />}
+              onClick={() => handleLinkClick(<Books />)}
+            >
+              Books
+            </Button>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<Person />}
+              onClick={() => handleLinkClick(<Profile />)}
+            >
+              Profile
+            </Button>
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<Person />}
+              onClick={() => handleLinkClick(<Messages />)}
+            >
+              Messages
+            </Button>            
+
+            <Button
+              fullWidth
+              sx={{ color: "white", textAlign: "left", padding: 1 }}
+              startIcon={<ExitToAppIcon />}
+              onClick={handleLogout}
+            >
               Logout
             </Button>
           </Box>
         </Drawer>
 
-        <Box sx={{ flexGrow: 1, padding: 4, color: "#fff" }}>
-          <Paper sx={{ padding: 3, boxShadow: 3, marginBottom: 4 }}>
-            <Typography variant="h4" align="center">WELCOME TO SHILOH</Typography>
-          </Paper>
-          {/* <Header /> */}
+        {/* Main Content */}
+        <Box sx={{ flexGrow: 1, padding: 4, backgroundColor: "#f4f4f4", minHeight: "100vh" }}>
+          <Header />
           {currentComponent}
         </Box>
       </Box>
-    ) : null
+    )
   );
 };
 

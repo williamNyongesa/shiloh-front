@@ -1,74 +1,163 @@
-<<<<<<< HEAD
-# shiloh-front
-=======
-# Getting Started with Create React App
+# Shiloh College LMS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Shiloh College is a React-based learning management system for students, teachers, and administrators. It provides role-based dashboards, course enrollment, assignments, quizzes, reports, events, payments, notifications, and account settings.
 
-## Available Scripts
+## Technology Stack
 
-In the project directory, you can run:
+- **React 18** with functional components and hooks
+- **Create React App / react-scripts 5** for development and production builds
+- **React Router 6** for client-side routing and protected routes
+- **Material UI 6** for accessible interface components and theming
+- **Emotion** for Material UI styling
+- **Custom CSS** for design tokens, responsive layouts, dashboard visuals, and landing pages
+- **Formik and Yup** for form state and validation
+- **Axios and Fetch API** for backend requests
+- **Chart.js and react-chartjs-2** for reports, attendance, finance, and progress charts
+- **FullCalendar** for calendar and timetable experiences
+- **notistack** for toast notifications
+- **React Icons and MUI Icons** for interface icons
+- **PayPal React SDK and Stripe SDKs** for payment integrations
+- **JWT tokens** stored in browser storage for authenticated sessions
 
-### `npm start`
+## Quick Start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Requirements
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js 18 or newer
+- npm
+- Access to the Shiloh backend for live API features
 
-### `npm test`
+### Install
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install
+```
 
-### `npm run build`
+### Start development server
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+On Windows PowerShell, use `npm.cmd` if script execution policy blocks `npm`:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```powershell
+npm.cmd start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The app opens at [http://localhost:3000](http://localhost:3000). If that port is busy, Create React App will offer an alternate port.
 
-### `npm run eject`
+### Create production build
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm.cmd run build
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Run tests
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm.cmd test
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Main Routes
 
-## Learn More
+| Route | Purpose | Access |
+| --- | --- | --- |
+| `/` | Public landing page | Public |
+| `/home` | Public product and learning overview | Public |
+| `/login` | Login and local demo access | Public |
+| `/signup` | Account registration | Public |
+| `/student/registration` | Student registration | Public |
+| `/enrollment` | Course enrollment | Student |
+| `/student` | Student dashboard and learning tools | Student |
+| `/teacher` | Teacher dashboard and teaching tools | Teacher |
+| `/admin` | Administration dashboard and operations | Admin |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Demo Accounts
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Open `/login` and select one of the demo actions. Demo data is stored locally and does not call the backend.
 
-### Code Splitting
+- **Student demo**: dashboard, courses, assignments, quizzes, classmates, report, calendar, events, payments, notifications, and settings
+- **Teacher demo**: dashboard, courses, student list, grading, attendance, notifications, settings, and logout
+- **Admin demo**: dashboard, users, transactions, finance, calendar, notifications, and logout
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Demo fixtures are defined in `src/demoData.js` and use the `demo: true` flag. Real authenticated sessions continue to use the configured backend APIs.
 
-### Analyzing the Bundle Size
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```text
+src/
+  App.js                         Application theme and routes
+  App.css                        Shared layout and visual styles
+  index.css                      Global tokens, typography, and accessibility styles
+  demoData.js                    Local demo users and feature fixtures
+  api.js                         API helpers
+  components/
+    context/                     Authentication and theme providers
+    students/                    Student dashboard and learning tools
+    teacher/                     Teacher dashboard and tools
+    admin/                       Admin dashboard and operations tools
+    Login.js                     Login and demo entry points
+    Signup.js                    Account creation
+    Navbar.js                    Public and role-based navigation
+  pages/
+    Home.js                      Product/home experience
+    Admin.js                     Admin shell
+    enrollment/                  Enrollment flow
+```
 
-### Making a Progressive Web App
+## Authentication and Roles
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Authentication is provided by `AuthContext` and uses the following browser storage values:
 
-### Advanced Configuration
+- `access_token`: active access token
+- `refresh_token`: refresh token
+- `user`: lightweight authenticated identity used by route guards
+- `userDATA`: backend response and role-specific dashboard data
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Protected routes check the authenticated user role before rendering student, teacher, or admin areas. Logout clears the active authentication data and returns the user to `/login`.
 
-### Deployment
+## UI and Design System
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+The interface uses a shared visual system defined in `src/App.js`, `src/index.css`, and `src/App.css`:
 
-### `npm run build` fails to minify
+- Primary indigo for navigation and focus actions
+- Coral for secondary actions and attention states
+- Mint for success and positive progress
+- Responsive layouts for desktop, tablet, and mobile
+- Visible keyboard focus states
+- Reduced-motion support through `prefers-reduced-motion`
+- Skeleton, empty, error, progress, and achievement states
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
->>>>>>> Initialize project using Create React App
+## Backend Configuration
+
+Most live requests currently target the Shiloh backend hosted at:
+
+```text
+https://shiloh-server-2t51.onrender.com
+```
+
+Before using live workflows, verify that the backend is available and that the required authentication, enrollment, finance, calendar, quiz, and notification endpoints are configured.
+
+## Troubleshooting
+
+### `npm` is blocked in PowerShell
+
+Use the Windows command shim:
+
+```powershell
+npm.cmd start
+```
+
+### Missing or corrupted dependency files
+
+Reinstall dependencies:
+
+```powershell
+Remove-Item -Recurse -Force node_modules
+npm.cmd install
+```
+
+### Port already in use
+
+Stop the existing development server or accept the alternate port suggested by Create React App.
+
+### Demo data does not appear
+
+Use the demo buttons on `/login`. Demo data is loaded into `localStorage` and can be reset by logging out or clearing browser storage for the site.
